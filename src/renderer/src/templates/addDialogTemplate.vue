@@ -1,12 +1,37 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { requestListStore } from '@renderer/stores/requestList';
-const { addRequestList } = requestListStore();
+const { addFolder, addApi, updateFolder, updateApi } = requestListStore();
+import { EnumMenuCode } from "@renderer/enums/enumMenuCode";
+import { FolderRequest, ApiRequest } from "@renderer/interfaces/request"
+
+onMounted(() => {
+    // 使用 watch 监听 isOpenDialog 的变化
+    watch(() => props.isOpenDialog, (newValue) => {
+        // 检查对话框是否正在被打开
+        if (newValue) {
+            if (EnumMenuCode.RENAME_FOLDER === props.label) {
+                if (props.requestFolder) {
+                    collectionName.value = props.requestFolder.folderName;
+                }
+            } else if (EnumMenuCode.RENAME_API === props.label) {
+                if (props.apiRequest) {
+                    collectionName.value = props.apiRequest.apiName;
+                }
+            }
+        } else {
+            // 在对话框关闭时清空输入框，防止下次打开时显示旧数据
+            collectionName.value = '';
+        }
+    });
+})
 
 // 定义props 获取父组件传递的值
 const props = defineProps<{
     isOpenDialog: boolean;
-    title: string;
+    label: EnumMenuCode;
+    apiRequest?: ApiRequest; // 可选的 API 请求对象
+    requestFolder?: FolderRequest; // 可选的文件夹请求对象
 }>();
 // 定义事件
 const emit = defineEmits(['update:isOpenDialog']);
@@ -21,14 +46,30 @@ const handleCancel = () => {
 };
 // 确认方法
 const handleConfirm = () => {
-    // 判断title类型
-    if (props.title === '新建集合') {
+    // 新建文件夹
+    if (EnumMenuCode.ADD_FFOLDER === props.label) {
         // 这里可以添加逻辑来处理新建集合的操作
-        addRequestList(collectionName.value);
-    } else {
-        // 新建api
-        console.log('其他操作:', collectionName.value);
-    }    
+        addFolder(collectionName.value);
+    }
+    // 修改文件夹名称
+    if (EnumMenuCode.RENAME_FOLDER === props.label) {
+        if (props.requestFolder) {
+            updateFolder(props.requestFolder.folderId, collectionName.value)
+        }
+    }
+    // 新建API
+    if (EnumMenuCode.ADD_API === props.label) {
+        if (props.requestFolder) {
+            addApi(props.requestFolder.folderId, collectionName.value)
+        }
+    }
+    // 修改API名称
+    if (EnumMenuCode.RENAME_API === props.label) {
+        if (props.requestFolder && props.apiRequest) {
+            props.apiRequest.apiName = collectionName.value;
+            updateApi(props.requestFolder.folderId, props.apiRequest);
+        }
+    }
     handleCancel();
 };
 </script>
@@ -39,7 +80,7 @@ const handleConfirm = () => {
         :before-close="handleCancel">
         <template #header>
             <div class="dialog-header">
-                <h3>{{ title }}</h3>
+                <h3>{{ label }}</h3>
             </div>
         </template>
 
@@ -99,11 +140,13 @@ const handleConfirm = () => {
         border: 1px solid #5e5c5c;
         box-shadow: none;
         font-size: 16px;
+
         // 输入框聚焦
         &.is-focus {
             box-shadow: 0 0 0 1px #67c23a;
             border-color: #67c23a;
         }
+
         // 输入框内容颜色
         .el-input__inner {
             color: #fff;

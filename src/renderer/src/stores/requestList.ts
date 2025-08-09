@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import {RequestFolder,ApiRequest } from "@renderer/interfaces/request"
+import {FolderRequest,ApiRequest } from "@renderer/interfaces/request"
 import { SequenceUtil } from "@renderer/utils/SequenceUtil";
 
 // 创建初始的请求列表
-const initialRequestList: RequestFolder[] = [
+const initialRequestList: FolderRequest[] = [
     {
         folderId: SequenceUtil.nextId(),
         folderName: '默认文件夹1',
@@ -37,14 +37,14 @@ const initialRequestList: RequestFolder[] = [
 
 // 定义请求列表的 Pinia store
 export const requestListStore = defineStore("requestListStore", () => {
-    const requestList = ref<RequestFolder[]>(initialRequestList);
+    const requestList = ref<FolderRequest[]>(initialRequestList);
 
     /**
      * 添加一个新的请求文件夹到请求列表 
      * @param folderName  {string} - 要添加的请求文件夹名称
      */
-    function addRequestList(folderName: string):void {
-        const requestFolder: RequestFolder = {
+    function addFolder(folderName: string):void {
+        const requestFolder: FolderRequest = {
             folderId: SequenceUtil.nextId(),
             folderName: folderName,
             apiItems: []
@@ -57,7 +57,7 @@ export const requestListStore = defineStore("requestListStore", () => {
      * @param folderId {string} - 文件夹的唯一标识符
      * @param folderName {string} - 文件夹名称
      */
-    function updateRequestList(folderId: string,folderName: string):void {
+    function updateFolder(folderId: string,folderName: string):void {
         const folder = requestList.value.find(item => item.folderId === folderId);
         if (folder) {
             folder.folderName = folderName;
@@ -68,7 +68,7 @@ export const requestListStore = defineStore("requestListStore", () => {
      * 删除请求列表
      * @param folderName {string} - 文件夹名称
      */
-    function deleteRequestList(folderId: string): void {
+    function deleteFolder(folderId: string): void {
         requestList.value = requestList.value.filter(item => item.folderId !== folderId);
     }
 
@@ -127,5 +127,5 @@ export const requestListStore = defineStore("requestListStore", () => {
         }
     }
  
-    return {requestList, addRequestList, updateRequestList, deleteRequestList, addApi, updateApi, deleteApi };
+    return {requestList, addFolder, updateFolder, deleteFolder, addApi, updateApi, deleteApi };
 })

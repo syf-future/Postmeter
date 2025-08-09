@@ -9,7 +9,7 @@ export interface ApiRequest {
 }
 
 // 定义文件夹的类型，它包含一个 ApiRequest 数组
-export interface RequestFolder {
+export interface FolderRequest {
   folderId: string; // 唯一标识符
   folderName: string;   // 文件夹名称
   apiItems: ApiRequest[]; // 可选的 API 请求列表

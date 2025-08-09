@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { ApiRequest } from "@renderer/interfaces/request"
 import MenuTemplate from '@renderer/templates/menuTemplate.vue';
-
+import { EnumMenuCode } from "@renderer/enums/enumMenuCode";
 
 // 通过defineProps 宏函数来接收父组件传的数据
 defineProps<{
@@ -14,12 +14,13 @@ const isMenuVisible = ref(false);
 const menuX = ref(0);
 const menuY = ref(0);
 
-const menuItems = [
-    { label: '打开API', action: 'open_api' },
-    { label: '复制', action: 'copy' },
-    { label: '重命名', action: 'rename' },
-    { label: '删除', action: 'delete' },
-];
+const menuItems = new Array<EnumMenuCode>(
+    EnumMenuCode.OPEN_API,
+    EnumMenuCode.COPY_API,
+    EnumMenuCode.RENAME_API,
+    EnumMenuCode.DELETE_API
+);
+
 // 处理右键菜单的显示和位置
 const handleContextMenu = (e: MouseEvent) => {
     // 获取鼠标点击的坐标
@@ -28,25 +29,25 @@ const handleContextMenu = (e: MouseEvent) => {
     isMenuVisible.value = true;
 };
 
-const onMenuItemClick = (action: string) => {
+const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     // 根据点击的菜单项执行相应操作
-    console.log('执行操作：', action);
+    console.log('执行操作：', enumMenuCode);
     // 这里可以根据 action 的值来触发不同的函数，例如：
-    if (action === 'open_api') {
+    if (EnumMenuCode.OPEN_API === enumMenuCode) {
         // 处理新建API的逻辑
         console.log('打开API');
     }
-    else if (action === 'copy') {
-        // 处理复制的逻辑
-        console.log('复制');
+    if (EnumMenuCode.COPY_API === enumMenuCode) {
+        // 处理复制API的逻辑
+        console.log('复制API');
     }
-    else if (action === 'rename') {
-        // 处理重命名的逻辑
-        console.log('重命名');
+    if (EnumMenuCode.RENAME_API === enumMenuCode) {
+        // 处理重命名API的逻辑
+        console.log('重命名API');
     }
-    else if (action === 'delete') {
-        // 处理删除的逻辑
-        console.log('删除');
+    if (EnumMenuCode.DELETE_API === enumMenuCode) {
+        // 处理删除API的逻辑
+        console.log('删除API');
     }
 };
 </script>

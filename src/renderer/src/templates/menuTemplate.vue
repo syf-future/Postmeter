@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue';
+import { EnumMenuCode } from "@renderer/enums/enumMenuCode";
 
 const props = defineProps({
     visible: Boolean,
     x: Number,
     y: Number,
-    items: Array as () => Array<{ label: string; shortcut?: string; action: string }>,
+    items: Array<EnumMenuCode>,
 });
 
 const emit = defineEmits(['item-click', 'close']);
 
-const handleItemClick = (item: any) => {
-    emit('item-click', item.action);
+const handleItemClick = (item: EnumMenuCode) => {
+    emit('item-click', item);
     emit('close'); // 点击后隐藏菜单
 };
 
@@ -38,9 +39,9 @@ watchEffect((onInvalidate) => {
 <!-- 右键菜单模板 -->
 <template>
     <ul v-if="visible" :style="{ left: x + 'px', top: y + 'px' }" class="context-menu">
-        <li v-for="item in items" :key="item.label" @click="handleItemClick(item)">
+        <li v-for="item in items" :key="item" @click="handleItemClick(item)">
             <div class="labelStyle">
-                {{ item.label }}
+                {{ item }}
             </div>
         </li>
     </ul>

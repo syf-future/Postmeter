@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import ApiTemplate from './apiTemplate.vue';
-import { RequestFolder } from "@renderer/interfaces/request"
+import { FolderRequest } from "@renderer/interfaces/request"
 import MenuTemplate from '@renderer/templates/menuTemplate.vue';
+import AddFolderDialog from '@renderer/templates/addDialogTemplate.vue';
+import { EnumMenuCode } from "@renderer/enums/enumMenuCode";
 
 // 每个组件实例都会有自己的 isFolderOpen 状态
 const isFolderOpen = ref(false);
 
 // 通过defineProps 宏函数来接收父组件传的数据
-defineProps<{
-    requestFolder: RequestFolder
+const props = defineProps<{
+    requestFolder: FolderRequest
 }>();
 
 
@@ -19,12 +21,12 @@ const isMenuVisible = ref(false);
 const menuX = ref(0);
 const menuY = ref(0);
 
-const menuItems = [
-    { label: '新建API', action: 'new_api' },
-    { label: '复制', action: 'copy' },
-    { label: '重命名', action: 'rename' },
-    { label: '删除', action: 'delete' },
-];
+const menuItems = new Array<EnumMenuCode>(
+    EnumMenuCode.ADD_API,
+    EnumMenuCode.COPY_FOLDER,
+    EnumMenuCode.RENAME_FOLDER,
+    EnumMenuCode.DELETE_FOLDER
+);
 // 处理右键菜单的显示和位置
 const handleContextMenu = (e: MouseEvent) => {
     // 获取鼠标点击的坐标
@@ -33,25 +35,28 @@ const handleContextMenu = (e: MouseEvent) => {
     isMenuVisible.value = true;
 };
 
-const onMenuItemClick = (action: string) => {
-    // 根据点击的菜单项执行相应操作
-    console.log('执行操作：', action);
+// 处理菜单项点击事件
+const isOpenDialog = ref<boolean>(false); // 定义新建集合弹窗的状态
+const dialogLabel = ref<EnumMenuCode>(EnumMenuCode.ADD_FFOLDER); // 弹窗标题
+const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
+    dialogLabel.value = enumMenuCode;
     // 这里可以根据 action 的值来触发不同的函数，例如：
-    if (action === 'new_api') {
-        // 处理新建API的逻辑
+    if (EnumMenuCode.ADD_API === enumMenuCode) {
         console.log('新建API');
+        isOpenDialog.value = true;
     }
-    else if (action === 'copy') {
-        // 处理复制的逻辑
-        console.log('复制');
+    if (EnumMenuCode.COPY_FOLDER === enumMenuCode) {
+        // 处理复制文件夹的逻辑
+        console.log('复制文件夹');
     }
-    else if (action === 'rename') {
-        // 处理重命名的逻辑
-        console.log('重命名');
+    if (EnumMenuCode.RENAME_FOLDER === enumMenuCode) {
+        // 处理重命名文件夹的逻辑
+        console.log('重命名文件夹');
+        isOpenDialog.value = true;
     }
-    else if (action === 'delete') {
-        // 处理删除的逻辑
-        console.log('删除');
+    if (EnumMenuCode.DELETE_FOLDER === enumMenuCode) {
+        // 处理删除文件夹的逻辑
+        console.log('删除文件夹');
     }
 };
 </script>
@@ -63,10 +68,10 @@ const onMenuItemClick = (action: string) => {
             <use v-if="!isFolderOpen" xlink:href="#icon-wenjianjiaguan1"></use>
             <use v-else xlink:href="#icon-wenjianjiakai"></use>
         </svg>
-        <span class="name">{{ requestFolder.folderName }}</span>
-        <span class="count">({{ requestFolder.apiItems.length }})</span>
+        <span class="name">{{ props.requestFolder.folderName }}</span>
+        <span class="count">({{ props.requestFolder.apiItems.length }})</span>
     </div>
-    <div v-if="isFolderOpen" v-for="(api, index) in requestFolder.apiItems" :key="index">
+    <div v-if="isFolderOpen" v-for="(api, index) in props.requestFolder.apiItems" :key="index">
         <ApiTemplate :apiRequest="api" />
     </div>
 
@@ -74,6 +79,10 @@ const onMenuItemClick = (action: string) => {
     <div>
         <MenuTemplate :visible="isMenuVisible" :x="menuX" :y="menuY" :items="menuItems" @item-click="onMenuItemClick"
             @close="isMenuVisible = false" />
+    </div>
+    <!-- 新建集合弹窗 -->
+    <div>
+        <AddFolderDialog v-model:isOpenDialog="isOpenDialog" :label="dialogLabel" :requestFolder = "props.requestFolder"/>
     </div>
 </template>
 

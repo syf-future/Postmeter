@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import FolderTemplate from '@renderer/templates/folderTemplate.vue';
 import { requestListStore } from '@renderer/stores/requestList';
 import AddFolderDialog from '@renderer/templates/addDialogTemplate.vue';
+import { EnumMenuCode } from "@renderer/enums/enumMenuCode";
 import { ref } from 'vue';
 // 使用 storeToRefs 来解构 state，保持响应式
 const { requestList } = storeToRefs(requestListStore());
@@ -45,7 +46,7 @@ const isOpenDialog = ref(false);
     </div>
     <!-- 新建集合弹窗 -->
     <div>
-        <AddFolderDialog v-model:isOpenDialog="isOpenDialog" title="新建集合" />
+        <AddFolderDialog v-model:isOpenDialog="isOpenDialog" :label="EnumMenuCode.ADD_FFOLDER" />
     </div>
 </template>
 
