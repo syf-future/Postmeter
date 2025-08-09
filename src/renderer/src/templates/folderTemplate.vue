@@ -5,6 +5,8 @@ import { FolderRequest } from "@renderer/interfaces/request"
 import MenuTemplate from '@renderer/templates/menuTemplate.vue';
 import AddFolderDialog from '@renderer/templates/addDialogTemplate.vue';
 import { EnumMenuCode } from "@renderer/enums/enumMenuCode";
+import { requestListStore } from '@renderer/stores/requestList';
+const { addFolder, deleteFolder } = requestListStore();
 
 // 每个组件实例都会有自己的 isFolderOpen 状态
 const isFolderOpen = ref(false);
@@ -36,7 +38,7 @@ const handleContextMenu = (e: MouseEvent) => {
 };
 
 // 处理菜单项点击事件
-const isOpenDialog = ref<boolean>(false); // 定义新建集合弹窗的状态
+const isOpenDialog = ref<boolean>(false); // 定义弹窗的状态
 const dialogLabel = ref<EnumMenuCode>(EnumMenuCode.ADD_FFOLDER); // 弹窗标题
 const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     dialogLabel.value = enumMenuCode;
@@ -48,6 +50,7 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     if (EnumMenuCode.COPY_FOLDER === enumMenuCode) {
         // 处理复制文件夹的逻辑
         console.log('复制文件夹');
+        addFolder(props.requestFolder.folderName + ' - 副本');
     }
     if (EnumMenuCode.RENAME_FOLDER === enumMenuCode) {
         // 处理重命名文件夹的逻辑
@@ -57,6 +60,7 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     if (EnumMenuCode.DELETE_FOLDER === enumMenuCode) {
         // 处理删除文件夹的逻辑
         console.log('删除文件夹');
+        deleteFolder(props.requestFolder.folderId);
     }
 };
 </script>
@@ -72,7 +76,7 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
         <span class="count">({{ props.requestFolder.apiItems.length }})</span>
     </div>
     <div v-if="isFolderOpen" v-for="(api, index) in props.requestFolder.apiItems" :key="index">
-        <ApiTemplate :apiRequest="api" />
+        <ApiTemplate :requestFolder = "props.requestFolder" :apiRequest="api" />
     </div>
 
     <!-- 右键菜单 -->
@@ -82,7 +86,8 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     </div>
     <!-- 新建集合弹窗 -->
     <div>
-        <AddFolderDialog v-model:isOpenDialog="isOpenDialog" :label="dialogLabel" :requestFolder = "props.requestFolder"/>
+        <AddFolderDialog v-model:isOpenDialog="isOpenDialog" :label="dialogLabel"
+            :requestFolder="props.requestFolder" />
     </div>
 </template>
 
