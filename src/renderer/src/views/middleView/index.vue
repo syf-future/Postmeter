@@ -82,6 +82,7 @@ onUnmounted(() => {
   width: 20%;
   min-width: 2px;
   max-width: 70%;
+  flex-shrink: 0;
 }
 
 .viewStyle {

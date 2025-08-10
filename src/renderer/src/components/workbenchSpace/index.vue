@@ -1,0 +1,32 @@
+<script setup lang="ts">
+import WorkbenchTabs from './workbenchTabs.vue';
+import WorkbenchContent from './workbenchContent.vue';
+</script>
+<!-- 工作台主空间 -->
+<template>
+    <div id="workbench-space">
+        <div class="tabs-style">
+            <WorkbenchTabs />
+        </div>
+        <div class="content-style">
+            <WorkbenchContent />
+        </div>
+    </div>
+</template>
+
+<style lang="scss" scoped>
+#workbench-space {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.tabs-style {
+    width: 100%;
+    height: 40px;
+}
+
+.content-style {
+    flex-grow: 1;
+}
+</style>

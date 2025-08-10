@@ -13,6 +13,7 @@ function createWindow(): void {
     minHeight: 750, // 最小高度
     show: false, // 初始不显示，等准备好再显示
     autoHideMenuBar: true, // 自动隐藏菜单栏
+    title:"Postmeter", // 窗口标题
     ...(process.platform === 'linux' ? { icon } : {}), // Linux下设置图标
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'), // 预加载脚本
