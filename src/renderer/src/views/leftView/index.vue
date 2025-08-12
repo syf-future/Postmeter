@@ -64,7 +64,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 50px;
+  width: 100%;
   min-width: 50px;
   background-color: var(--ev-c-background-color1);
 }

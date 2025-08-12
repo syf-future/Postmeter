@@ -1,18 +1,57 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
+// 存储 apiTabsContainer 的引用
+const apiTabsContainer = ref<HTMLElement | null>(null);
+
 const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
+
+let scrollInterval: any = null; // 存储滚动的定时器
+
+// 向左滚动函数
+const startScrollLeft = () => {
+    if (apiTabsContainer.value) {
+        // 设置一个定时器来持续滚动
+        scrollInterval = setInterval(() => {
+            apiTabsContainer.value!.scrollLeft -= 50; // 每次滚动50px
+        }, 30); // 每30ms滚动一次
+    }
+};
+
+// 向右滚动函数
+const startScrollRight = () => {
+    if (apiTabsContainer.value) {
+        // 设置一个定时器来持续滚动
+        scrollInterval = setInterval(() => {
+            apiTabsContainer.value!.scrollLeft += 50; // 每次滚动10px
+        }, 30); // 每30ms滚动一次
+    }
+};
+
+// 停止滚动
+const stopScroll = () => {
+    if (scrollInterval) {
+        clearInterval(scrollInterval); // 停止定时器
+        scrollInterval = null;
+    }
+};
 </script>
-<!-- 工作台标签页 -->
+
+
+
 <template>
     <div id="workbench-tabs">
         <div class="tabs-first">
-            <div class="tab-title">
+            <!-- mousedown 鼠标按下执行  mouseup 鼠标松开执行  mouseleave 鼠标离开执行 -->
+            <div class="tab-title" @mousedown="startScrollLeft" @mouseup="stopScroll" @mouseleave="stopScroll">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icon-icon_on_the_left"></use>
                 </svg>
             </div>
         </div>
+
         <!-- api标签 -->
-        <div class="api-tabs-container">
+        <div class="api-tabs-container" ref="apiTabsContainer">
             <div class="apiTabsStyle" v-for="(item, index) in dateList" :key="index">
                 <div class="tab-title-api">
                     <svg class="icon" aria-hidden="true">
@@ -30,7 +69,7 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
 
         <!-- 其他标签 -->
         <div class="tabs-end">
-            <div class="tab-title">
+            <div class="tab-title" @mousedown="startScrollRight" @mouseup="stopScroll" @mouseleave="stopScroll">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icon-icon_on_the_right"></use>
                 </svg>
@@ -40,7 +79,6 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
                     <use xlink:href="#icon-tianjia"></use>
                 </svg>
             </div>
-
             <div class="tab-title">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icon-gengduo"></use>
@@ -50,18 +88,21 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
     </div>
 </template>
 
+
+
 <style lang="scss" scoped>
 #workbench-tabs {
     display: flex;
     align-items: center;
-    width: 100%;
     height: 40px;
     border-bottom: 1px solid var(--ev-c-border-color1);
+    overflow: hidden; // 防止整体溢出
 }
 
 .tabs-first {
     height: 100%;
     width: 40px;
+    min-width: 40px; // 确保固定宽度
     font-size: 24px;
     display: flex;
     align-items: center;
@@ -69,14 +110,16 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
 }
 
 .tabs-end {
-    flex-shrink: 0;
-    border-left: 1px solid var(--ev-c-border-color1);
-    height: 100%;
-    width: 120px;
-    font-weight: bold;
-    font-size: 24px;
+    position: relative;
     display: flex;
     align-items: center;
+    height: 100%;
+    width: 120px;
+    min-width: 120px; // 确保固定宽度
+    flex-shrink: 0;
+    border-left: 1px solid var(--ev-c-border-color1);
+    font-weight: bold;
+    font-size: 24px;
 }
 
 .tab-title {
@@ -99,15 +142,18 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
     height: 16px;
 }
 
-// API标签样式
 .api-tabs-container {
-    flex-grow: 1;
     display: flex;
     height: 100%;
-    /* 添加这一行，启用水平滚动条来处理溢出内容 */
-    overflow-x: auto;
-    /* overflow-y: hidden; 或直接使用 overflow: hidden; 保持整洁 */
-    overflow-y: hidden;
+    max-width: calc(100% - 120px); // 减去两端固定宽度
+    min-width: 0; // 允许缩小
+    overflow-x: auto; // 启用水平滚动
+    scroll-behavior: smooth; // 平滑滚动
+
+    // 隐藏滚动条
+    &::-webkit-scrollbar {
+        display: none; // 隐藏滚动条
+    }
 }
 
 .apiTabsStyle {
@@ -116,10 +162,9 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
     font-size: 14px;
     color: var(--ev-c-text-color2);
     border: 1px solid var(--ev-c-border-color1);
-    /* 强制文本不换行 */
-    white-space: nowrap;
-    /* 添加这一行，阻止标签页在空间不足时收缩 */
-    flex-shrink: 0;
+    height: 100%;
+    padding: 0 8px;
+    flex-shrink: 0; // 防止标签被压缩
 
     &:hover {
         cursor: pointer;
@@ -131,18 +176,13 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
         display: flex;
         align-items: center;
 
-        .icon {
-            margin-left: 5px;
-        }
-
         span {
-            margin-left: 5px;
+            margin: 0 5px;
         }
     }
 
     .tab-title-close {
-        margin-left: 10px;
-        margin-right: 5px;
+        margin-left: 5px;
         border-radius: 50px;
         display: flex;
         align-items: center;
@@ -151,23 +191,22 @@ const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
         height: 20px;
 
         .icon {
-            width: 0px;
-            height: 0px;
+            width: 0;
+            height: 0;
+            transition: all 0.2s ease;
         }
     }
-}
 
-/* 当鼠标悬停在 .apiTabsStyle 上时，显示 .tab-title-close */
-.apiTabsStyle:hover .tab-title-close {
-    &:hover {
-        cursor: pointer;
-        background-color: var(--ev-c-background-color3);
+    &:hover .tab-title-close {
+        &:hover {
+            cursor: pointer;
+            background-color: var(--ev-c-background-color3);
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+        }
     }
-
-    .icon {
-        width: 16px;
-        height: 16px;
-    }
-
 }
 </style>

@@ -16,7 +16,6 @@ import WorkbenchContent from './workbenchContent.vue';
 
 <style lang="scss" scoped>
 #workbench-space {
-    display: flex;
     width: 100%;
     height: 100%;
 }
@@ -27,6 +26,7 @@ import WorkbenchContent from './workbenchContent.vue';
 }
 
 .content-style {
-    flex-grow: 1;
+    width: 100%;
+    height: calc(100% - 40px);
 }
 </style>
