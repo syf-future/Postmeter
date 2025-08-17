@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import WorkbenchTabs from './workbenchTabs.vue';
 import WorkbenchContent from './workbenchContent.vue';
+import WorkbenchSendApi from './workbenchSendApi.vue';
 </script>
 <!-- 工作台主空间 -->
 <template>
@@ -9,6 +10,7 @@ import WorkbenchContent from './workbenchContent.vue';
             <WorkbenchTabs />
         </div>
         <div class="content-style">
+            <WorkbenchSendApi />
             <WorkbenchContent />
         </div>
     </div>

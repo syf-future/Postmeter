@@ -2,55 +2,42 @@
 import LeftView from '@renderer/views/leftView/index.vue';
 import MiddleView from '@renderer/views/middleView/index.vue';
 import RightView from '@renderer/views/rightView/index.vue';
+import { ref, onUnmounted } from 'vue';
 
-import { ref, onMounted, onUnmounted } from 'vue';
-
-const middleViewRef = ref<HTMLElement | null>(null);
-const rightViewRef = ref<HTMLElement | null>(null);
 const isResizing = ref(false);
-let startX = 0;
-let initialMiddleWidth = 0;
-let initialRightWidth = 0;
+const startX = ref(0);
+const middleWidth = ref(200); // 初始中间区域宽度，单位 px
+const rightMinWidth = 200;
+const middleMinWidth = 100;
 
-// 确保DOM加载完成后获取元素引用
-onMounted(() => {
-    middleViewRef.value = document.querySelector('.middle-view-container');
-    rightViewRef.value = document.querySelector('.right-view-container');
-});
+const mainViewRef = ref<HTMLElement | null>(null);
 
 const startResize = (event: MouseEvent) => {
-    if (!middleViewRef.value || !rightViewRef.value) return;
-
     isResizing.value = true;
-    startX = event.clientX;
-    initialMiddleWidth = middleViewRef.value.offsetWidth;
-    initialRightWidth = rightViewRef.value.offsetWidth;
+    startX.value = event.clientX;
+    document.body.style.cursor = 'ew-resize';
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', stopResize);
 };
 
 const handleMouseMove = (event: MouseEvent) => {
-    if (!isResizing.value || !middleViewRef.value || !rightViewRef.value) return;
+    if (!mainViewRef.value) return;
 
-    const dx = event.clientX - startX;
+    const dx = event.clientX - startX.value;
+    const totalWidth = mainViewRef.value.clientWidth;
 
-    // 计算新的宽度
-    const newMiddleWidth = Math.max(0, initialMiddleWidth + dx); // 最小宽度0px
-    const newRightWidth = Math.max(100, initialRightWidth - dx); // 最小宽度100px
+    const newMiddle = middleWidth.value + dx;
+    const maxMiddle = totalWidth - rightMinWidth;
 
-    // 应用新宽度
-    if (newMiddleWidth > 100){
-        middleViewRef.value.style.width = `${newMiddleWidth}px`;
-    }
-    if (newMiddleWidth < 50){
-        middleViewRef.value.style.width = `${0}px`;
-    }
-    rightViewRef.value.style.width = `${newRightWidth}px`;
+    middleWidth.value = Math.max(middleMinWidth, Math.min(maxMiddle, newMiddle));
+    startX.value = event.clientX; // 更新 startX 防止溢出
 };
 
 const stopResize = () => {
     isResizing.value = false;
+    document.body.style.cursor = '';
+
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', stopResize);
 };
@@ -61,14 +48,19 @@ onUnmounted(() => {
 });
 </script>
 
+
 <template>
-    <div id="main-view">
+    <div id="main-view" ref="mainViewRef">
         <left-view class="left-view-container" />
-        <middle-view ref="middleViewRef" class="middle-view-container" />
+
+        <middle-view class="middle-view-container" :style="{ width: `${middleWidth}px` }" />
+
         <div class="boundaryStyle" @mousedown="startResize"></div>
-        <right-view ref="rightViewRef" class="right-view-container" />
+
+        <right-view class="right-view-container" :style="{ width: `calc(100% - 40px - 2px - ${middleWidth}px)` }" />
     </div>
 </template>
+
 
 <style lang="scss" scoped>
 #main-view {
@@ -76,42 +68,51 @@ onUnmounted(() => {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    position: relative;
 
     .left-view-container {
         flex-shrink: 0;
-        /* 固定宽度 */
         width: 40px;
-        /* 根据实际情况调整 */
+        background-color: #2c2c2c;
     }
 
     .middle-view-container {
         flex-shrink: 0;
-        /* 初始宽度 */
-        width: 20%;
+        height: 100%;
+        background-color: #1e1e1e;
     }
 
     .right-view-container {
         flex-grow: 1;
-        /* 初始宽度 */
-        width: 80%;
-    }
-}
-
-.boundaryStyle {
-    width: 2px;
-    height: 100%;
-    background-color: var(--ev-c-border-color1);
-    cursor: col-resize;
-    flex-shrink: 0;
-    z-index: 10;
-    /* 确保分隔条在最上层 */
-
-    &:hover {
-        background-color: var(--ev-c-border-color2);
+        height: 100%;
+        background-color: #1a1a1a;
     }
 
-    &:active {
-        background-color: #46ff40;
+    .boundaryStyle {
+        width: 2px;
+        background-color: var(--ev-c-border-color1);
+        cursor: ew-resize;
+        flex-shrink: 0;
+        z-index: 10;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: var(--ev-c-border-color2);
+        }
+
+        &:active {
+            background-color: #46ff40;
+        }
+    }
+
+    .resize-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        cursor: ew-resize;
+        z-index: 999;
     }
 }
 </style>

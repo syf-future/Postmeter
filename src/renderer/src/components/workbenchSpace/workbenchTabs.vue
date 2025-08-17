@@ -6,35 +6,21 @@ const apiTabsContainer = ref<HTMLElement | null>(null);
 
 const dateList = ["API请求1", "API请求2", "API请求3", "API请求4"];
 
-let scrollInterval: any = null; // 存储滚动的定时器
 
-// 向左滚动函数
+// 向左移动函数
 const startScrollLeft = () => {
     if (apiTabsContainer.value) {
-        // 设置一个定时器来持续滚动
-        scrollInterval = setInterval(() => {
-            apiTabsContainer.value!.scrollLeft -= 50; // 每次滚动50px
-        }, 30); // 每30ms滚动一次
+        apiTabsContainer.value!.scrollLeft -= 80; // 每次滚动50px
     }
 };
 
-// 向右滚动函数
+// 向右移动函数
 const startScrollRight = () => {
     if (apiTabsContainer.value) {
-        // 设置一个定时器来持续滚动
-        scrollInterval = setInterval(() => {
-            apiTabsContainer.value!.scrollLeft += 50; // 每次滚动10px
-        }, 30); // 每30ms滚动一次
+        apiTabsContainer.value!.scrollLeft += 80; // 每次滚动10px
     }
 };
 
-// 停止滚动
-const stopScroll = () => {
-    if (scrollInterval) {
-        clearInterval(scrollInterval); // 停止定时器
-        scrollInterval = null;
-    }
-};
 </script>
 
 
@@ -43,7 +29,7 @@ const stopScroll = () => {
     <div id="workbench-tabs">
         <div class="tabs-first">
             <!-- mousedown 鼠标按下执行  mouseup 鼠标松开执行  mouseleave 鼠标离开执行 -->
-            <div class="tab-title" @mousedown="startScrollLeft" @mouseup="stopScroll" @mouseleave="stopScroll">
+            <div class="tab-title" @click="startScrollLeft">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icon-icon_on_the_left"></use>
                 </svg>
@@ -69,7 +55,7 @@ const stopScroll = () => {
 
         <!-- 其他标签 -->
         <div class="tabs-end">
-            <div class="tab-title" @mousedown="startScrollRight" @mouseup="stopScroll" @mouseleave="stopScroll">
+            <div class="tab-title" @click="startScrollRight">
                 <svg class="icon" aria-hidden="true">
                     <use xlink:href="#icon-icon_on_the_right"></use>
                 </svg>
