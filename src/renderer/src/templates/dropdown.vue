@@ -68,10 +68,8 @@ const getColorClass = (label?: string) => {
         :class="[
           { active: activeOption?.value === item.value },
           getColorClass(item.label)
-        ]"
-      >
-        {{ item.label }}
-      </li>
+        ]">
+        {{ item.label }}</li>
     </ul>
   </div>
 </template>
@@ -79,6 +77,7 @@ const getColorClass = (label?: string) => {
 <style lang="scss">
 .dropdown {
   width: 100%;
+  height: 100%;
   position: relative;
   display: inline-block;
   font-weight: bold; // 加粗
@@ -89,15 +88,23 @@ const getColorClass = (label?: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 }
 .dropdown-menu {
-  width: 100%;
+  width:100%;
+  position: absolute;
   border: 2px solid var(--en-c-subject-color1);
   background-color: var(--ev-c-background-color2);
+  border-radius: 4px;
+  padding: 4px 0; 
 }
 .dropdown-menu li {
   padding: 6px 12px;
-  cursor: pointer;
+  border-bottom: 1px solid var(--ev-c-border-color1);
+}
+// 去掉最后一个 li 的下边框
+.dropdown-menu li:last-child {
+  border-bottom: none;
 }
 .dropdown-menu li:hover,
 .dropdown-menu li.active {
