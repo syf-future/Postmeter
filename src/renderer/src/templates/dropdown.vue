@@ -1,53 +1,53 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { Option } from "@renderer/interfaces/option";
+import { ref, computed } from 'vue'
+import { Option } from '@renderer/interfaces/option'
 
 const props = defineProps<{
-  label?: string;
-  options?: Option[];
-}>();
+  label?: string
+  options?: Option[]
+}>()
 
 const emit = defineEmits<{
-(e: "select", item: Option): void;
-}>();
+  (e: 'select', item: Option): void
+}>()
 
-const visible = ref(false);
-const selected = ref<Option | null>(null);
+const visible = ref(false)
+const selected = ref<Option | null>(null)
 
 const toggle = () => {
-  visible.value = !visible.value;
-};
+  visible.value = !visible.value
+}
 
 const selectItem = (item: Option) => {
-  selected.value = item;
-  emit("select", item);
-  visible.value = false;
-};
+  selected.value = item
+  emit('select', item)
+  visible.value = false
+}
 
 // 根据 props.label 找到默认高亮的选项
 const activeOption = computed(() => {
-  if (selected.value) return selected.value;
+  if (selected.value) return selected.value
   if (props.label && props.options) {
-    return props.options.find(opt => opt.label === props.label) || null;
+    return props.options.find((opt) => opt.label === props.label) || null
   }
-  return null;
-});
+  return null
+})
 
 // 根据 label 值返回 class
 const getColorClass = (label?: string) => {
   switch (label?.toUpperCase()) {
-    case "GET":
-      return "text-get";
-    case "POST":
-      return "text-post";
-    case "PUT":
-        return "text-put";
-    case "DELETE":
-      return "text-delete";
+    case 'GET':
+      return 'text-get'
+    case 'POST':
+      return 'text-post'
+    case 'PUT':
+      return 'text-put'
+    case 'DELETE':
+      return 'text-delete'
     default:
-      return "";
+      return ''
   }
-};
+}
 </script>
 
 <template>
@@ -57,7 +57,7 @@ const getColorClass = (label?: string) => {
       :class="getColorClass(selected?.label || props.label)"
       @click="toggle"
     >
-      {{ selected?.label || props.label || "请选择" }}
+      {{ selected?.label || props.label || '请选择' }}
       <span class="arrow">▼</span>
     </div>
     <ul v-if="visible" class="dropdown-menu">
@@ -65,10 +65,7 @@ const getColorClass = (label?: string) => {
         v-for="item in props.options"
         :key="item.value"
         @click="selectItem(item)"
-        :class="[
-          { active: activeOption?.value === item.value },
-          getColorClass(item.label)
-        ]"
+        :class="[{ active: activeOption?.value === item.value }, getColorClass(item.label)]"
       >
         {{ item.label }}
       </li>
@@ -79,6 +76,7 @@ const getColorClass = (label?: string) => {
 <style lang="scss">
 .dropdown {
   width: 100%;
+  height: 100%;
   position: relative;
   display: inline-block;
   font-weight: bold; // 加粗
@@ -89,15 +87,23 @@ const getColorClass = (label?: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 }
 .dropdown-menu {
   width: 100%;
+  position: absolute;
   border: 2px solid var(--en-c-subject-color1);
   background-color: var(--ev-c-background-color2);
+  border-radius: 4px;
+  padding: 4px 0;
 }
 .dropdown-menu li {
   padding: 6px 12px;
-  cursor: pointer;
+  border-bottom: 1px solid var(--ev-c-border-color1);
+}
+// 去掉最后一个 li 的下边框
+.dropdown-menu li:last-child {
+  border-bottom: none;
 }
 .dropdown-menu li:hover,
 .dropdown-menu li.active {
@@ -115,7 +121,7 @@ const getColorClass = (label?: string) => {
 .text-post {
   color: goldenrod;
 }
-.text-put{
+.text-put {
   color: goldenrod;
 }
 .text-delete {
