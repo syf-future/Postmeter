@@ -1,25 +1,29 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import Dropdown from '@renderer/templates/dropdown.vue'
+import {Option} from "@renderer/interfaces/option"
 
-const value = ref('')
-const input = ref('')
-
+const apiType = ref('GET')
+const apiInput = ref('')
+const onSelect = (item:Option) => {
+  apiType.value=item.value
+};
 const options = [
     {
-        value: 'GET',
         label: 'GET',
+        value: 'GET',
     },
     {
-        value: 'POST',
         label: 'POST',
+        value: 'POST',
     },
     {
-        value: 'PUT',
         label: 'PUT',
+        value: 'PUT',
     },
     {
-        value: 'DELETE',
         label: 'DELETE',
+        value: 'DELETE',
     }
 ]
 </script>
@@ -27,13 +31,13 @@ const options = [
 <template>
     <div id="workbench-send-api">
         <div class="api-input">
-            <div class="api-select">
-
+            <div class="api-dropdow">
+                <Dropdown :label="apiType" :options="options" @select="onSelect"/>
             </div>
-            <input v-model="input" class="custom-input" />
+            <input v-model="apiInput" class="custom-input" />
         </div>
         <div class="api-send">
-            <span @click="value = ''" style="margin-left: 10px">发送</span>
+            <span @click="" style="margin-left: 10px">发送</span>
         </div>
     </div>
 </template>
@@ -54,12 +58,9 @@ const options = [
     height: 50px;
     width: 85%;
     margin-left: 10px;
-    .api-select {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .api-dropdow {
         height: 100%;
-        width: 180px;
+        width: 140px;
         border: 2px solid var(--ev-c-border-color1);
         border-right: none;
         border-top-left-radius: 5px;
