@@ -77,6 +77,7 @@ const getColorClass = (label?: string) => {
 .dropdown {
   width: 100%;
   height: 100%;
+  height: 100%;
   position: relative;
   display: inline-block;
   font-weight: bold; // 加粗
@@ -87,6 +88,7 @@ const getColorClass = (label?: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
   user-select: none;
 }
 .dropdown-menu {
@@ -99,6 +101,11 @@ const getColorClass = (label?: string) => {
 }
 .dropdown-menu li {
   padding: 6px 12px;
+  border-bottom: 1px solid var(--ev-c-border-color1);
+}
+// 去掉最后一个 li 的下边框
+.dropdown-menu li:last-child {
+  border-bottom: none;
   border-bottom: 1px solid var(--ev-c-border-color1);
 }
 // 去掉最后一个 li 的下边框
