@@ -22,6 +22,8 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Workbench: typeof import('./src/components/workbench.vue')['default']
     WorkbenchContent: typeof import('./src/components/workbenchSpace/workbenchContent.vue')['default']
+    WorkbenchRequest: typeof import('./src/components/workbenchSpace/workbenchRequest.vue')['default']
+    WorkbenchResponse: typeof import('./src/components/workbenchSpace/workbenchResponse.vue')['default']
     WorkbenchSendApi: typeof import('./src/components/workbenchSpace/workbenchSendApi.vue')['default']
     WorkbenchSpace: typeof import('./src/components/workbenchSpace/index.vue')['default']
     WorkbenchTabs: typeof import('./src/components/workbenchSpace/workbenchTabs.vue')['default']

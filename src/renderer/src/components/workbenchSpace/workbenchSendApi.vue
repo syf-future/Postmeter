@@ -50,7 +50,7 @@ const options = [
   border-bottom: 1px solid var(--ev-c-border-color1);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
 }
 
 .api-input {
@@ -101,15 +101,15 @@ const options = [
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 10px;
   height: 50px;
   width: 80px;
   color: var(--ev-c-text-color1);
-  font-size: 16px;
+  font-size: 20px;
   border-radius: 5px;
   border: 2px solid var(--ev-c-border-color1);
   cursor: pointer;
   background-color: var(--ev-c-background-color1);
+
 
   &:hover {
     background-color: var(--ev-c-background-color3);
