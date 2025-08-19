@@ -5,7 +5,7 @@ import WorkbenchReqHeader from '@renderer/templates/workbenchReqHeader.vue'
 import WorkbenchReqBody from '@renderer/templates/workbenchReqBody.vue'
 
 // 表示选中的标签
-const labelRef = ref<string>('0')
+const labelRef = ref<string>('1')
 </script>
 <!-- 工作台请求 -->
 <template>
