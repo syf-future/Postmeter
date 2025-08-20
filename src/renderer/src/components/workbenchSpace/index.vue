@@ -29,6 +29,6 @@ import WorkbenchSendApi from './workbenchSendApi.vue';
 
 .content-style {
     width: 100%;
-    height: calc(100% - 40px);
+    height: calc(100% - 120px);
 }
 </style>

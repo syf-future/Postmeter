@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+// 水平/垂直布局状态
+import { useLayoutStore } from '@renderer/stores/layoutStores'
+const { updateLayout } = useLayoutStore()
 
 // 存储 apiTabsContainer 的引用
 const apiTabsContainer = ref<HTMLElement | null>(null)
@@ -61,7 +64,8 @@ const startScrollRight = () => {
           <use xlink:href="#icon-tianjia"></use>
         </svg>
       </div>
-      <div class="tab-title">
+      <!-- 目前当作改变布局用 -->
+      <div class="tab-title" @click="updateLayout">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-gengduo"></use>
         </svg>

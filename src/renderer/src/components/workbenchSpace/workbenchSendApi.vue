@@ -1,38 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Dropdown from '@renderer/templates/dropdown.vue'
-import { Option } from '@renderer/interfaces/option'
 
 const apiType = ref('GET')
 const apiInput = ref('')
-const onSelect = (item: Option) => {
-  apiType.value = item.value
+const onSelect = (item: string) => {
+  apiType.value = item
 }
-const options = [
-  {
-    label: 'GET',
-    value: 'GET'
-  },
-  {
-    label: 'POST',
-    value: 'POST'
-  },
-  {
-    label: 'PUT',
-    value: 'PUT'
-  },
-  {
-    label: 'DELETE',
-    value: 'DELETE'
-  }
-]
+const types = ['GET', 'POST', 'PUT', 'DELETE']
 </script>
 
 <template>
   <div id="workbench-send-api">
     <div class="api-input">
       <div class="api-dropdow">
-        <Dropdown :label="apiType" :options="options" @select="onSelect" />
+        <Dropdown :label="apiType" :types="types" @select="onSelect" />
       </div>
       <input v-model="apiInput" class="custom-input" />
     </div>
@@ -68,7 +50,6 @@ const options = [
     background-color: var(--ev-c-background-color1);
     color: var(--ev-c-text-color2);
     font-size: 20px;
- 
   }
 
   .custom-input {
@@ -105,7 +86,6 @@ const options = [
   border: 2px solid var(--ev-c-border-color1);
   cursor: pointer;
   background-color: var(--ev-c-background-color1);
-
 
   &:hover {
     background-color: var(--ev-c-background-color3);

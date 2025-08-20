@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Option } from '@renderer/interfaces/option'
 
 const props = defineProps<{
-  label?: string
-  options?: Option[]
+  label: string
+  types: string[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', item: Option): void
+  (e: 'select', item: string): void
 }>()
 
 const visible = ref(false)
-const selected = ref<Option | null>(null)
+const selected = ref<string>('')
 
 const toggle = () => {
   visible.value = !visible.value
 }
 
-const selectItem = (item: Option) => {
+const selectItem = (item: string) => {
   selected.value = item
   emit('select', item)
   visible.value = false
@@ -27,14 +26,14 @@ const selectItem = (item: Option) => {
 // 根据 props.label 找到默认高亮的选项
 const activeOption = computed(() => {
   if (selected.value) return selected.value
-  if (props.label && props.options) {
-    return props.options.find((opt) => opt.label === props.label) || null
+  if (props.label && props.types) {
+    return props.types.find((opt) => opt === props.label) || null
   }
   return null
 })
 
 // 根据 label 值返回 class
-const getColorClass = (label?: string) => {
+const getColorClass = (label: string) => {
   switch (label?.toUpperCase()) {
     case 'GET':
       return 'text-get'
@@ -54,22 +53,22 @@ const getColorClass = (label?: string) => {
   <div class="dropdown">
     <div
       class="dropdown-trigger"
-      :class="getColorClass(selected?.label || props.label)"
+      :class="getColorClass(selected || props.label)"
       @click="toggle"
     >
       <p>
-        {{ selected?.label || props.label || '请选择' }}
+        {{ selected || props.label || '请选择' }}
       </p>
       <span class="arrow">▼</span>
     </div>
     <ul v-if="visible" class="dropdown-menu">
       <li
-        v-for="item in props.options"
-        :key="item.value"
+        v-for="item in props.types"
+        :key="item"
         @click="selectItem(item)"
-        :class="[{ active: activeOption?.value === item.value }, getColorClass(item.label)]"
+        :class="[{ active: activeOption === item }, getColorClass(item)]"
       >
-        {{ item.label }}
+        {{ item }}
       </li>
     </ul>
   </div>

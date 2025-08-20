@@ -2,18 +2,18 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import WorkbenchRequest from './workbenchRequest.vue'
 import WorkbenchResponse from './workbenchResponse.vue'
+
+import { storeToRefs } from 'pinia'
+import { useLayoutStore } from '@renderer/stores/layoutStores'
+
+const { layout } = storeToRefs(useLayoutStore()) // layout: false=水平，true=垂直
+
 const requestSize = ref(50) // 左侧/上方默认占比 %
 let isDragging = false
-const isVertical = ref(false) // false=水平，true=垂直
-
-const toggleDirection = () => {
-  isVertical.value = !isVertical.value
-  requestSize.value = 50 // 切换时重置为 50%
-}
 
 const startDrag = () => {
   isDragging = true
-  document.body.style.cursor = isVertical.value ? 'ns-resize' : 'ew-resize'
+  document.body.style.cursor = layout.value ? 'ns-resize' : 'ew-resize'
 }
 
 const stopDrag = () => {
@@ -29,7 +29,7 @@ const onDrag = (e: MouseEvent) => {
   const rect = container.getBoundingClientRect()
   let percent = 50
 
-  if (isVertical.value) {
+  if (layout.value) {
     // 垂直方向，计算高度百分比
     percent = ((e.clientY - rect.top) / rect.height) * 100
   } else {
@@ -56,33 +56,24 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div>
-    <!-- 切换按钮 -->
-    <button @click="toggleDirection" style="margin-bottom: 10px">
-      切换为 {{ isVertical ? '水平布局' : '垂直布局' }}
-    </button>
+  <div id="workbench-content" :class="{ vertical: layout }">
+    <!-- 左侧/上方 -->
+    <div
+      class="workbench-request"
+      :style="layout ? { height: requestSize + '%' } : { width: requestSize + '%' }"
+    >
+      <WorkbenchRequest />
+    </div>
 
-    <div id="workbench-content" :class="{ vertical: isVertical }">
-      <!-- 左侧/上方 -->
-      <div
-        class="workbench-request"
-        :style="isVertical ? { height: requestSize + '%' } : { width: requestSize + '%' }"
-      >
-        <WorkbenchRequest />
-      </div>
+    <!-- 分割线 -->
+    <div class="boundaryStyle" :class="{ vertical: layout }" @mousedown="startDrag"></div>
 
-      <!-- 分割线 -->
-      <div class="boundaryStyle" :class="{ vertical: isVertical }" @mousedown="startDrag"></div>
-
-      <!-- 右侧/下方 -->
-      <div
-        class="workbench-response"
-        :style="
-          isVertical ? { height: 100 - requestSize + '%' } : { width: 100 - requestSize + '%' }
-        "
-      >
-        <WorkbenchResponse />
-      </div>
+    <!-- 右侧/下方 -->
+    <div
+      class="workbench-response"
+      :style="layout ? { height: 100 - requestSize + '%' } : { width: 100 - requestSize + '%' }"
+    >
+      <WorkbenchResponse />
     </div>
   </div>
 </template>
@@ -90,7 +81,7 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 #workbench-content {
   width: 100%;
-  height: 80vh;
+  height: 100%;
   display: flex;
   overflow: hidden;
   border: 1px solid var(--ev-c-border-color1);
@@ -99,7 +90,6 @@ onBeforeUnmount(() => {
     flex-direction: column;
   }
 }
-
 
 .boundaryStyle {
   width: 2px;
