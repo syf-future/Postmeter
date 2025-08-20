@@ -50,7 +50,7 @@ const options = [
   border-bottom: 1px solid var(--ev-c-border-color1);
   display: flex;
   align-items: center;
-  // justify-content: space-between;
+  justify-content: space-around;
 }
 
 .api-input {
@@ -68,11 +68,7 @@ const options = [
     background-color: var(--ev-c-background-color1);
     color: var(--ev-c-text-color2);
     font-size: 20px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: var(--ev-c-background-color3);
-    }
+ 
   }
 
   .custom-input {

@@ -57,7 +57,9 @@ const getColorClass = (label?: string) => {
       :class="getColorClass(selected?.label || props.label)"
       @click="toggle"
     >
-      {{ selected?.label || props.label || '请选择' }}
+      <p>
+        {{ selected?.label || props.label || '请选择' }}
+      </p>
       <span class="arrow">▼</span>
     </div>
     <ul v-if="visible" class="dropdown-menu">
@@ -77,30 +79,40 @@ const getColorClass = (label?: string) => {
 .dropdown {
   width: 100%;
   height: 100%;
-  height: 100%;
   position: relative;
   display: inline-block;
-  font-weight: bold; // 加粗
+  p {
+    font-weight: bold; // 加粗
+  }
 }
 .dropdown-trigger {
   cursor: pointer;
-  padding: 6px 12px;
+  width: 100%;
+  height: 100%;
+  padding: 0px 6px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   user-select: none;
   user-select: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--ev-c-background-color3);
+  }
 }
 .dropdown-menu {
   width: 100%;
   position: absolute;
-  border: 2px solid var(--en-c-subject-color1);
+  cursor: pointer;
+  border: 1px solid var(--ev-c-border-color1);
   background-color: var(--ev-c-background-color2);
   border-radius: 4px;
-  padding: 4px 0;
+  padding: 0px 0px;
+  z-index: 999;
 }
 .dropdown-menu li {
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-bottom: 1px solid var(--ev-c-border-color1);
 }
 // 去掉最后一个 li 的下边框

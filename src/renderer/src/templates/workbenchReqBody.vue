@@ -1,9 +1,37 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+import Dropdown from '@renderer/templates/dropdown.vue'
+import { Option } from '@renderer/interfaces/option'
+
+const apiType = ref('JSON')
+const onSelect = (item: Option) => {
+  apiType.value = item.value
+}
+const options = [
+  {
+    label: 'JSON',
+    value: 'JSON'
+  },
+  {
+    label: 'TEXT',
+    value: 'TEXT'
+  },
+  {
+    label: 'XML',
+    value: 'XML'
+  }
+]
+</script>
 
 <template>
   <div id="workbench-body">
     <div class="param-title">
-      <div><span>数据类型</span> <span>JSON</span></div>
+      <div class="param-type">
+        <span>数据类型</span>
+        <div class="title-type">
+          <Dropdown :label="apiType" :options="options" @select="onSelect" />
+        </div>
+      </div>
 
       <div class="add-btn" @click=""><p>+</p></div>
     </div>
@@ -17,7 +45,6 @@
   height: 100%;
 }
 .param-title {
-  margin-top: 5px;
   margin-left: 10px;
   margin-right: 10px;
   display: flex;
@@ -25,6 +52,16 @@
   justify-content: space-between;
   color: var(--ev-c-text-color1);
   font-size: 14px;
+
+  .param-type {
+    display: flex;
+
+    .title-type {
+      margin-left: 5px;
+      font-size: 15px;
+      color: var(--ev-c-text-color2);
+    }
+  }
 }
 
 .add-btn {
