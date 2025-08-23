@@ -15,7 +15,7 @@ const isFormat = ref<'off' | 'on'>('off')
 // 是否自动换行
 const isLine = ref<'off' | 'on'>('off')
 // 输入的数据
-const sendDate = ref<string>('')
+const sendDate = ref<string>('{"aaa":"123"}')
 
 function onIsFormat(): void {
   if (isFormat.value === 'off') {
@@ -79,6 +79,7 @@ function onIsLine(): void {
         :language="apiType.toLowerCase()"
         :isFormat="isFormat"
         :isLine="isLine"
+        :isReadOnly="true"
       />
     </div>
   </div>

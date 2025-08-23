@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import WorkbenchParam from '@renderer/templates/workbenchParam.vue'
+import WorkbenchParam from '@renderer/templates/workbenchReqParam.vue'
 import WorkbenchReqHeader from '@renderer/templates/workbenchReqHeader.vue'
 import WorkbenchReqBody from '@renderer/templates/workbenchReqBody.vue'
 
@@ -42,7 +42,7 @@ const labelRef = ref<string>('1')
     display: flex; /* 开启 flex 布局 */
     align-items: center; /* 垂直居中 */
     justify-content: center; /* 水平居中 */
-    padding: 3px; /* 内边距上下左右 3px */
+    padding: 2px; /* 内边距上下左右 3px */
     color: var(--ev-c-text-color1);
     white-space: nowrap; /* 不换行 */
     overflow: hidden; /*超出隐藏 */

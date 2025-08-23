@@ -84,11 +84,11 @@ const addRow = () => {
 }
 .add-btn {
   display: flex;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 25px;
   border-radius: 50px;
   color: var(--ev-c-text-color1);
   cursor: pointer;
@@ -104,8 +104,10 @@ const addRow = () => {
 
 .param-list {
   width: calc(100% - 20px);
+  height: calc(100% - 100px);
   margin-left: 10px;
   margin-top: 5px;
+  overflow: auto; /* 超出部分显示滚动条 */
 }
 
 /* 选项框 */
