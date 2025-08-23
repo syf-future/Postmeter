@@ -2,13 +2,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Dropdown from '@renderer/templates/dropdown.vue'
-
+import JsonEditorTemplate from './jsonEditorTemplate.vue'
 // 下拉选择数据类型
 const apiType = ref('JSON')
 const onSelect = (item: string) => {
+  console.log('点击下拉框类型：', item)
+
   apiType.value = item
 }
 const types = ['TEXT', 'JSON', 'XML']
+
+const sendDate = ref<string>('')
 </script>
 
 <template>
@@ -24,7 +28,9 @@ const types = ['TEXT', 'JSON', 'XML']
     </div>
 
     <!-- JSON 编辑器区域 -->
-    <div class="param-json"></div>
+    <div class="param-json">
+      <JsonEditorTemplate v-model="sendDate" :language="apiType.toLowerCase()" />
+    </div>
   </div>
 </template>
 
