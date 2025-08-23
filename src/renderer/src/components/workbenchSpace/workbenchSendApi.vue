@@ -16,7 +16,7 @@ const types = ['GET', 'POST', 'PUT', 'DELETE']
       <div class="api-dropdow">
         <Dropdown :label="apiType" :types="types" @select="onSelect" />
       </div>
-      <input v-model="apiInput" class="custom-input" />
+      <el-input v-model="apiInput" class="custom-input" />
     </div>
     <div class="api-send">
       <span @click="" style="margin-left: 10px">发送</span>
@@ -43,7 +43,7 @@ const types = ['GET', 'POST', 'PUT', 'DELETE']
   .api-dropdow {
     height: 100%;
     width: 140px;
-    border: 2px solid var(--ev-c-border-color1);
+    border: 1px solid var(--ev-c-border-color1);
     border-right: none;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
@@ -54,22 +54,27 @@ const types = ['GET', 'POST', 'PUT', 'DELETE']
 
   .custom-input {
     height: 100%;
-    width: 80%;
-    border: 2px solid var(--ev-c-border-color1);
-    font-size: 20px;
-    background-color: var(--ev-c-background-color1);
-    /* 设置右上角圆角 */
-    border-top-right-radius: 5px;
-    /* 设置右下角圆角 */
-    border-bottom-right-radius: 5px;
-    color: var(--ev-c-text-color2);
-    padding: 0 5px;
-    box-sizing: border-box;
+    width: 100%;
 
-    // 正确的聚焦样式
-    &:focus {
-      outline: none; // 移除浏览器默认的焦点轮廓
-      border-color: #67c23a;
+    .el-input__wrapper {
+      background-color: var(--ev-c-background-color1);
+      border: 1px solid var(--ev-c-border-color1);
+      box-shadow: none;
+      font-size: 16px;
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      // 输入框聚焦
+      &.is-focus {
+        box-shadow: 0 0 0 1px #67c23a;
+        border-color: #67c23a;
+      }
+
+      // 输入框内容颜色
+      .el-input__inner {
+        color: #fff;
+      }
     }
   }
 }
@@ -83,7 +88,7 @@ const types = ['GET', 'POST', 'PUT', 'DELETE']
   color: var(--ev-c-text-color1);
   font-size: 20px;
   border-radius: 5px;
-  border: 2px solid var(--ev-c-border-color1);
+  border: 1px solid var(--ev-c-border-color1);
   cursor: pointer;
   background-color: var(--ev-c-background-color1);
 

@@ -1,3 +1,4 @@
+/** 下拉框模板 */
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
@@ -51,11 +52,7 @@ const getColorClass = (label: string) => {
 
 <template>
   <div class="dropdown">
-    <div
-      class="dropdown-trigger"
-      :class="getColorClass(selected || props.label)"
-      @click="toggle"
-    >
+    <div class="dropdown-trigger" :class="getColorClass(selected || props.label)" @click="toggle">
       <p>
         {{ selected || props.label || '请选择' }}
       </p>

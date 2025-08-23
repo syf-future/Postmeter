@@ -1,3 +1,4 @@
+/** 参数列表模板 */
 <script setup lang="ts">
 import { ref } from 'vue'
 
