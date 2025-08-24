@@ -1,17 +1,14 @@
 /** 参数列表模板 */
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ReqRow } from '@renderer/interfaces/reqRow'
 
-interface Row {
-  checked: boolean
-  key: string
-  value: string
-}
+const props = defineProps<{
+  reqParam: ReqRow[]
+}>()
 
-const rows = ref<Row[]>([
-  { checked: true, key: 'foo', value: 'bar' },
-  { checked: false, key: 'hello', value: 'reqable' }
-])
+// 请求参数
+const rows = ref<ReqRow[]>(props.reqParam)
 
 // 删除行
 const removeRow = (index: number) => {

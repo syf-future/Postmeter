@@ -36,7 +36,7 @@ onMounted(() => {
     <div class="icon-first" style="width: 100%; flex-grow: 1">
       <div class="left-icon" v-for="(item, idx) in firstIcons" :key="idx" @mouseenter="hoverIndex = item.id"
         @mouseleave="hoverIndex = null" @click="onClick(item)" :class="{ active: clickIndex === item.id }">
-        <el-tooltip effect="light" :content="item.title" placement="right" hide-after="100"
+        <el-tooltip effect="light" :content="item.title" placement="right" hide-after=100
           popper-class="is-customized">
           <svg class="icon" aria-hidden="true">
             <use v-if="clickIndex === item.id" :xlink:href="item.hover"></use>
@@ -49,7 +49,7 @@ onMounted(() => {
     <div class="icon-last" style="width: 100%">
       <div class="left-icon" v-for="(item, idx) in lastIcons" :key="idx" @mouseenter="hoverIndex = item.id"
         @mouseleave="hoverIndex = null">
-        <el-tooltip effect="light" :content="item.title" placement="right" hide-after="100"
+        <el-tooltip effect="light" :content="item.title" placement="right" hide-after=100
           popper-class="is-customized">
           <svg class="icon" aria-hidden="true">
             <use :xlink:href="hoverIndex === item.id ? item.hover : item.normal"></use>

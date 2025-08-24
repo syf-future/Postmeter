@@ -44,6 +44,8 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
   if (EnumMenuCode.OPEN_API === enumMenuCode) {
     // 处理新建API的逻辑
     console.log('打开API')
+    addApiTables(props.apiRequest)
+    setNowApiTable(props.apiRequest)
   }
   if (EnumMenuCode.COPY_API === enumMenuCode) {
     // 处理复制API的逻辑
@@ -60,12 +62,23 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     deleteApi(props.requestFolder.folderId, props.apiRequest.apiId)
   }
 }
+
+/**处理API标签 */
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+const { addApiTables, setNowApiTable } = apiTablesStore()
+// 点击api。增加标签，设置当前标签
+function onClickApi(): void {
+  console.log("点击api请求");
+  
+  addApiTables(props.apiRequest)
+  setNowApiTable(props.apiRequest)
+}
 </script>
 
 <!-- api模板 -->
 <template>
   <div id="api-template" @contextmenu.prevent="handleContextMenu">
-    <div class="apiStyle">
+    <div class="apiStyle" @click="onClickApi">
       <span class="methodStyle" :class="`method-${apiRequest.method}`">{{
         apiRequest.method
       }}</span>

@@ -83,6 +83,7 @@ export const requestListStore = defineStore("requestListStore", () => {
             apiName: apiName,
             method: 'GET',
             url: '',
+            param: new Map(),
             headers: new Map(),
             body: ''
         }

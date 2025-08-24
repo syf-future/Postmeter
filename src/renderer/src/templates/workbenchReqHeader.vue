@@ -1,16 +1,13 @@
 /** 请求头列表模板 */
 <script setup lang="ts">
 import { ref } from 'vue'
-interface Row {
-  checked: boolean
-  key: string
-  value: string
-}
+import { ReqRow } from '@renderer/interfaces/reqRow'
 
-const rows = ref<Row[]>([
-  { checked: true, key: 'foo', value: 'bar' },
-  { checked: false, key: 'hello', value: 'reqable' }
-])
+const props = defineProps<{
+  reqHeader: ReqRow[]
+}>()
+// 请求头
+const rows = ref<ReqRow[]>(props.reqHeader)
 
 // 删除行
 const removeRow = (index: number) => {

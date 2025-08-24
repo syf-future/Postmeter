@@ -7,20 +7,33 @@ const { updateLayout } = useLayoutStore()
 // 存储 apiTabsContainer 的引用
 const apiTabsContainer = ref<HTMLElement | null>(null)
 
-const dateList = ['API请求1', 'API请求2', 'API请求3', 'API请求4']
-
 // 向左移动函数
-const startScrollLeft = () => {
+function startScrollLeft(): void {
   if (apiTabsContainer.value) {
     apiTabsContainer.value!.scrollLeft -= 80 // 每次滚动50px
   }
 }
 
 // 向右移动函数
-const startScrollRight = () => {
+function startScrollRight(): void {
   if (apiTabsContainer.value) {
     apiTabsContainer.value!.scrollLeft += 80 // 每次滚动10px
   }
+}
+
+/**api标签用法 */
+import { storeToRefs } from 'pinia'
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+import { ApiRequest } from '@renderer/interfaces/request'
+const { apiTables, nowApiTable } = storeToRefs(apiTablesStore())
+const { setNowApiTable, deleteApiTables } = apiTablesStore()
+// 点击标签
+function onClickApiTable(apiTable: ApiRequest): void {
+  setNowApiTable(apiTable)
+}
+// 点击删除
+function onCLickDeleteApiTable(apiTable: ApiRequest): void {
+  deleteApiTables(apiTable.apiId)
 }
 </script>
 
@@ -37,14 +50,19 @@ const startScrollRight = () => {
 
     <!-- api标签 -->
     <div class="api-tabs-container" ref="apiTabsContainer">
-      <div class="apiTabsStyle" v-for="(item, index) in dateList" :key="index">
-        <div class="tab-title-api">
+      <div
+        class="apiTabsStyle"
+        v-for="(apiTable, index) in apiTables"
+        :key="index"
+        :class="{ active: nowApiTable?.apiId === apiTable.apiId }"
+      >
+        <div class="tab-title-api" @click="onClickApiTable(apiTable)">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-faqiqingqiu"></use>
           </svg>
-          <span>{{ item }}</span>
+          <span>{{ apiTable.apiName }}</span>
         </div>
-        <div class="tab-title-close">
+        <div class="tab-title-close" @click="onCLickDeleteApiTable(apiTable)">
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-guanbi"></use>
           </svg>
@@ -79,7 +97,6 @@ const startScrollRight = () => {
   display: flex;
   align-items: center;
   height: 40px;
-  border-bottom: 1px solid var(--ev-c-border-color1);
   overflow: hidden; // 防止整体溢出
 }
 
@@ -91,6 +108,7 @@ const startScrollRight = () => {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--ev-c-border-color1);
 }
 
 .tabs-end {
@@ -104,6 +122,7 @@ const startScrollRight = () => {
   border-left: 1px solid var(--ev-c-border-color1);
   font-weight: bold;
   font-size: 24px;
+  border-bottom: 1px solid var(--ev-c-border-color1);
 }
 
 .tab-title {
@@ -144,7 +163,7 @@ const startScrollRight = () => {
   display: flex;
   align-items: center;
   font-size: 14px;
-  color: var(--ev-c-text-color2);
+  color: var(--ev-c-text-color1);
   border: 1px solid var(--ev-c-border-color1);
   height: 100%;
   padding: 0 8px;
@@ -155,6 +174,11 @@ const startScrollRight = () => {
     background-color: var(--ev-c-background-color1);
   }
 
+  &.active {
+    color: var(--ev-c-text-color3);
+    border-top: 3px solid var(--en-c-subject-color1); // 上边框绿色
+    border-bottom: none; // 去掉下边框（可选）
+  }
   .tab-title-api {
     height: 100%;
     display: flex;

@@ -18,7 +18,7 @@ const isOpenDialog = ref(false);
             <h5>工作台</h5>
             <div class="title-btn">
                 <div class="iconStyle" @click="isOpenDialog = true">
-                    <el-tooltip effect="light" content="新建" placement="bottom" hide-after="100"
+                    <el-tooltip effect="light" content="新建" placement="bottom" hide-after=100
                         popper-class="is-customized">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#icon-xinjian"></use>
@@ -27,7 +27,7 @@ const isOpenDialog = ref(false);
 
                 </div>
                 <div class="iconStyle">
-                    <el-tooltip effect="light" content="导出" placement="bottom" hide-after="100"
+                    <el-tooltip effect="light" content="导出" placement="bottom" hide-after=100
                         popper-class="is-customized">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#icon-daoru"></use>

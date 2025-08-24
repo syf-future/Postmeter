@@ -3,6 +3,9 @@
 import { ref } from 'vue'
 import Dropdown from '@renderer/templates/dropdown.vue'
 import JsonEditorTemplate from './jsonEditorTemplate.vue'
+const props = defineProps<{
+  reqBody: string
+}>()
 const types = ['TEXT', 'JSON', 'XML']
 // 下拉选择数据类型
 const apiType = ref('JSON')
@@ -15,8 +18,9 @@ const isFormat = ref<'off' | 'on'>('off')
 // 是否自动换行
 const isLine = ref<'off' | 'on'>('off')
 // 输入的数据
-const sendDate = ref<string>('')
+const sendDate = ref<string>(props.reqBody)
 
+// 点击格式化
 function onIsFormat(): void {
   if (isFormat.value === 'off') {
     isFormat.value = 'on'
@@ -24,6 +28,7 @@ function onIsFormat(): void {
     isFormat.value = 'off'
   }
 }
+// 点击自动换行
 function onIsLine(): void {
   if (isLine.value === 'off') {
     isLine.value = 'on'

@@ -48,7 +48,7 @@ function onIsLine(): void {
             effect="light"
             content="自动换行"
             placement="bottom"
-            hide-after="100"
+            hide-after=100
             popper-class="is-customized"
           >
             <svg class="icon" aria-hidden="true">
@@ -61,7 +61,7 @@ function onIsLine(): void {
             effect="light"
             content="格式化"
             placement="bottom"
-            hide-after="100"
+            hide-after=100
             popper-class="is-customized"
           >
             <svg class="icon" aria-hidden="true">

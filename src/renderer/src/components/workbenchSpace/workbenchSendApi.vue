@@ -1,13 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import Dropdown from '@renderer/templates/dropdown.vue'
+import { storeToRefs } from 'pinia'
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+const { nowApiTable } = storeToRefs(apiTablesStore())
 
-const apiType = ref('GET')
-const apiInput = ref('')
+// 请求的类型
+const apiType = ref<string>('GET')
+// 请求的url
+const apiInput = ref<string>('')
 const onSelect = (item: string) => {
   apiType.value = item
 }
 const types = ['GET', 'POST', 'PUT', 'DELETE']
+
+watch(nowApiTable, (newVal) => {
+  if (newVal) {
+    apiType.value = newVal.method
+    apiInput.value = newVal.url
+  }
+})
 </script>
 
 <template>

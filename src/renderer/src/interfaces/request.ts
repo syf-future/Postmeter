@@ -1,11 +1,13 @@
+import { ReqRow } from "./reqRow";
 // 定义单个 API 请求的类型
 export interface ApiRequest {
   apiId: string;
   apiName: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   url: string;
-  headers?: Map<string, string>; // 使用 Map 来存储 Headers
-  body?: string; // POST 请求可能有 body，所以是可选的
+  param: ReqRow[]; // 请求参数(get请求时传输的传输)
+  headers: ReqRow[]; // 请求头
+  body: string; // POST 请求可能有 body，所以是可选的
 }
 
 // 定义文件夹的类型，它包含一个 ApiRequest 数组
