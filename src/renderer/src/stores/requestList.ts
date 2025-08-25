@@ -1,8 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import {FolderRequest,ApiRequest } from "@renderer/interfaces/request"
+import { FolderRequest, ApiRequest } from "@renderer/interfaces/request"
 import { SequenceUtil } from "@renderer/utils/SequenceUtil";
-
 // 创建初始的请求列表
 const initialRequestList: FolderRequest[] = [
     {
@@ -13,8 +12,9 @@ const initialRequestList: FolderRequest[] = [
                 apiId: SequenceUtil.nextId(),
                 apiName: '默认API1',
                 method: 'GET',
-                url: 'https://www.baidu.com',
-                headers: new Map(),
+                url: 'http://localhost',
+                param: [],
+                headers: [],
                 body: ''
             }
         ]
@@ -27,8 +27,9 @@ const initialRequestList: FolderRequest[] = [
                 apiId: SequenceUtil.nextId(),
                 apiName: '默认API2',
                 method: 'POST',
-                url: 'https://www.baidu.com',
-                headers: new Map(),
+                url: 'http://localhost',
+                param: [],
+                headers: [],
                 body: ''
             }
         ]
@@ -43,7 +44,7 @@ export const requestListStore = defineStore("requestListStore", () => {
      * 添加一个新的请求文件夹到请求列表 
      * @param folderName  {string} - 要添加的请求文件夹名称
      */
-    function addFolder(folderName: string):void {
+    function addFolder(folderName: string): void {
         const requestFolder: FolderRequest = {
             folderId: SequenceUtil.nextId(),
             folderName: folderName,
@@ -57,7 +58,7 @@ export const requestListStore = defineStore("requestListStore", () => {
      * @param folderId {string} - 文件夹的唯一标识符
      * @param folderName {string} - 文件夹名称
      */
-    function updateFolder(folderId: string,folderName: string):void {
+    function updateFolder(folderId: string, folderName: string): void {
         const folder = requestList.value.find(item => item.folderId === folderId);
         if (folder) {
             folder.folderName = folderName;
@@ -77,14 +78,14 @@ export const requestListStore = defineStore("requestListStore", () => {
      * @param folderId  {string} - 文件夹的唯一标识符
      * @param apiName  {string} - 要添加的API名称
      */
-    function addApi(folderId: string, apiName: string):void {
+    function addApi(folderId: string, apiName: string): void {
         const apiRequest: ApiRequest = {
             apiId: SequenceUtil.nextId(),
             apiName: apiName,
             method: 'GET',
             url: '',
-            param: new Map(),
-            headers: new Map(),
+            param: [],
+            headers: [],
             body: ''
         }
         const folder = requestList.value.find(item => item.folderId === folderId);
@@ -95,19 +96,23 @@ export const requestListStore = defineStore("requestListStore", () => {
 
     /**
      * 更新请求列表名称
-     * @param folderId {string} - 文件夹的唯一标识符
      * @param apiRequest {ApiRequest} - 要更新的 API 请求对象
+     * @param folderId {string} - （可选）文件夹的唯一标识符
      */
-    function updateApi(folderId: string,apiRequest: ApiRequest):void {
-        const folder = requestList.value.find(item => item.folderId === folderId);
+    function updateApi(apiRequest: ApiRequest, folderId?: string): void {
+        // 根据 folderId 或 apiId 找到父文件夹
+        const folder = folderId
+            ? requestList.value.find(item => item.folderId === folderId)
+            : requestList.value.find(item => item.apiItems.some(x => x.apiId === apiRequest.apiId));
+
+        // 如果找到了文件夹
         if (folder) {
-            const apiList = folder.apiItems
-            if(apiList){
-                const apiIndex = apiList.findIndex(api => api.apiId === apiRequest.apiId);
-                if (apiIndex !== -1) {
-                    // 更新现有的 API 请求
-                    apiList[apiIndex] = apiRequest;
-                }
+            const apiList = folder.apiItems;
+            // 在 apiItems 中找到并更新对应的 API
+            const apiIndex = apiList.findIndex(api => api.apiId === apiRequest.apiId);
+
+            if (apiIndex !== -1) {
+                apiList[apiIndex] = apiRequest;
             }
         }
     }
@@ -127,6 +132,6 @@ export const requestListStore = defineStore("requestListStore", () => {
             }
         }
     }
- 
-    return {requestList, addFolder, updateFolder, deleteFolder, addApi, updateApi, deleteApi };
+
+    return { requestList, addFolder, updateFolder, deleteFolder, addApi, updateApi, deleteApi };
 })

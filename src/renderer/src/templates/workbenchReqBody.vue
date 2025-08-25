@@ -1,11 +1,15 @@
 /** 请求体模板 */
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import Dropdown from '@renderer/templates/dropdown.vue'
 import JsonEditorTemplate from './jsonEditorTemplate.vue'
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+import { ApiRequest } from '@renderer/interfaces/request'
+const { setUpdateApiTable } = apiTablesStore()
 const props = defineProps<{
-  reqBody: string
+  apiRequest?: ApiRequest
 }>()
+
 const types = ['TEXT', 'JSON', 'XML']
 // 下拉选择数据类型
 const apiType = ref('JSON')
@@ -18,8 +22,13 @@ const isFormat = ref<'off' | 'on'>('off')
 // 是否自动换行
 const isLine = ref<'off' | 'on'>('off')
 // 输入的数据
-const sendDate = ref<string>(props.reqBody)
-
+const sendDate = ref<string>(props.apiRequest ? props.apiRequest.body : '')
+watch(sendDate, (newDate) => {
+  if (props.apiRequest) {
+    props.apiRequest.body = newDate
+    setUpdateApiTable(props.apiRequest)
+  }
+})
 // 点击格式化
 function onIsFormat(): void {
   if (isFormat.value === 'off') {

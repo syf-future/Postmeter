@@ -71,7 +71,7 @@ const handleConfirm = () => {
   if (EnumMenuCode.RENAME_API === props.label) {
     if (props.requestFolder && props.apiRequest) {
       props.apiRequest.apiName = collectionName.value
-      updateApi(props.requestFolder.folderId, props.apiRequest)
+      updateApi(props.apiRequest, props.requestFolder.folderId)
     }
   }
   handleCancel()

@@ -1,24 +1,45 @@
 /** 参数列表模板 */
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { ReqRow } from '@renderer/interfaces/reqRow'
-
+import { ApiRequest } from '@renderer/interfaces/request'
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+const { setUpdateApiTable } = apiTablesStore()
 const props = defineProps<{
-  reqParam: ReqRow[]
+  apiRequest?: ApiRequest
 }>()
 
 // 请求参数
-const rows = ref<ReqRow[]>(props.reqParam)
+const rows = ref<ReqRow[]>([])
 
 // 删除行
 const removeRow = (index: number) => {
   rows.value.splice(index, 1)
+  if (props.apiRequest) {
+    props.apiRequest.param = rows.value
+    setUpdateApiTable(props.apiRequest)
+  }
 }
 
 // 新增行
 const addRow = () => {
   rows.value.push({ checked: false, key: '', value: '' })
+  if (props.apiRequest) {
+    props.apiRequest.param = rows.value
+    setUpdateApiTable(props.apiRequest)
+  }
 }
+onMounted(() => {
+  rows.value = [...(props.apiRequest ? props.apiRequest.param : [])] // 浅拷贝一份
+})
+// 深度监听
+watch(
+  () => props.apiRequest,
+  (newApiRequest) => {
+    console.log('监听到newReqParam变化:', newApiRequest)
+    rows.value = [...(props.apiRequest ? props.apiRequest.param : [])] // 浅拷贝一份
+  }
+)
 </script>
 
 <template>

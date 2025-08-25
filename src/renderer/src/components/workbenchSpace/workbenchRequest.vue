@@ -1,44 +1,54 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { ReqRow } from '@renderer/interfaces/reqRow'
 import WorkbenchParam from '@renderer/templates/workbenchReqParam.vue'
 import WorkbenchReqHeader from '@renderer/templates/workbenchReqHeader.vue'
 import WorkbenchReqBody from '@renderer/templates/workbenchReqBody.vue'
 import { storeToRefs } from 'pinia'
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+import { ApiRequest } from '@renderer/interfaces/request'
 const { nowApiTable } = storeToRefs(apiTablesStore())
+const { getUpdateApiTable } = apiTablesStore()
 // 表示选中的标签
 const labelRef = ref<string>('1')
-const reqParam = ref<ReqRow[]>([])
-const reqHeader = ref<ReqRow[]>([])
-const reqBody = ref<string>('')
+// const reqParam = ref<ReqRow[]>([])
+// const reqHeader = ref<ReqRow[]>([])
+// const reqBody = ref<string>('')
+const apiRequest = ref<ApiRequest>()
 watch(nowApiTable, (newVal) => {
   if (newVal) {
-    reqParam.value = newVal.param
-    reqHeader.value = newVal.headers
-    reqBody.value = newVal.body
+    // reqParam.value = newVal.param ?? []
+    // reqHeader.value = newVal.headers ?? []
+    // reqBody.value = newVal.body ?? ''
+    apiRequest.value = getUpdateApiTable(newVal)
+    labelRef.value = '1'
   }
 })
+
+function onClickReq(num: string): void {
+  console.log('点击请求：', num)
+
+  labelRef.value = num
+}
 </script>
 <!-- 工作台请求 -->
 <template>
   <div style="width: 100%; height: 100%">
     <div class="request-label-style">
-      <div class="label-test-style" @click="labelRef = '1'" :class="{ active: labelRef === '1' }">
-        <span>参数</span> <span class="text-count">({{ reqParam.length }})</span>
+      <div class="label-test-style" @click="onClickReq('1')" :class="{ active: labelRef === '1' }">
+        <span>参数</span> <span class="text-count">({{ apiRequest?.param.length }})</span>
       </div>
-      <div class="label-test-style" @click="labelRef = '2'" :class="{ active: labelRef === '2' }">
-        <span>请求头</span> <span class="text-count">({{ reqHeader.length }})</span>
+      <div class="label-test-style" @click="onClickReq('2')" :class="{ active: labelRef === '2' }">
+        <span>请求头</span> <span class="text-count">({{ apiRequest?.headers.length }})</span>
       </div>
-      <div class="label-test-style" @click="labelRef = '3'" :class="{ active: labelRef === '3' }">
+      <div class="label-test-style" @click="onClickReq('3')" :class="{ active: labelRef === '3' }">
         <span>请求体</span>
       </div>
     </div>
 
     <!-- 根据选中的标签 显示对应的组件 -->
-    <WorkbenchParam v-show="labelRef === '1'" :reqParam="reqParam" />
-    <WorkbenchReqHeader v-show="labelRef === '2'" :reqHeader="reqHeader" />
-    <WorkbenchReqBody v-show="labelRef === '3'" :reqBody="reqBody" />
+    <WorkbenchParam v-show="labelRef === '1'" :apiRequest="apiRequest" />
+    <WorkbenchReqHeader v-show="labelRef === '2'" :apiRequest="apiRequest" />
+    <WorkbenchReqBody v-show="labelRef === '3'" :apiRequest="apiRequest" />
   </div>
 </template>
 
