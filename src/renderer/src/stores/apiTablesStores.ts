@@ -26,6 +26,9 @@ export const apiTablesStore = defineStore("apiTablesStore", () => {
      */
     function deleteApiTables(apiId: string): void {
         apiTables.value = apiTables.value.filter(item => item.apiId !== apiId);
+        if (apiTables.value.length > 0) {
+            setNowApiTable(apiTables.value[apiTables.value.length - 1]);
+        }
     }
 
     /**
@@ -44,7 +47,6 @@ export const apiTablesStore = defineStore("apiTablesStore", () => {
     function getUpdateApiTable(apiRequest: ApiRequest): ApiRequest {
         // 1. 查找是否存在具有相同 apiId 的对象
         const index = updateApiTables.value.findIndex(item => item.apiId === apiRequest.apiId);
-
         if (index !== -1) {
             // 2. 如果存在，返回修改后的值
             return updateApiTables.value[index]
@@ -69,5 +71,13 @@ export const apiTablesStore = defineStore("apiTablesStore", () => {
         }
     }
 
-    return { apiTables, nowApiTable, addApiTables, deleteApiTables, setNowApiTable, getUpdateApiTable, setUpdateApiTable };
+    /**
+     * 清除已保存的api请求
+     * @param apiRequest 
+     */
+    function clearUpdateApiTables(apiRequest: ApiRequest): void {
+        updateApiTables.value = updateApiTables.value.filter(item => item.apiId !== apiRequest.apiId);
+    }
+
+    return { apiTables, nowApiTable, updateApiTables, addApiTables, deleteApiTables, setNowApiTable, getUpdateApiTable, setUpdateApiTable, clearUpdateApiTables };
 })

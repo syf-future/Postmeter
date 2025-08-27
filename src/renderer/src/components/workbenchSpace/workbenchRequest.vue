@@ -10,15 +10,9 @@ const { nowApiTable } = storeToRefs(apiTablesStore())
 const { getUpdateApiTable } = apiTablesStore()
 // 表示选中的标签
 const labelRef = ref<string>('1')
-// const reqParam = ref<ReqRow[]>([])
-// const reqHeader = ref<ReqRow[]>([])
-// const reqBody = ref<string>('')
 const apiRequest = ref<ApiRequest>()
 watch(nowApiTable, (newVal) => {
   if (newVal) {
-    // reqParam.value = newVal.param ?? []
-    // reqHeader.value = newVal.headers ?? []
-    // reqBody.value = newVal.body ?? ''
     apiRequest.value = getUpdateApiTable(newVal)
     labelRef.value = '1'
   }
@@ -35,10 +29,12 @@ function onClickReq(num: string): void {
   <div style="width: 100%; height: 100%">
     <div class="request-label-style">
       <div class="label-test-style" @click="onClickReq('1')" :class="{ active: labelRef === '1' }">
-        <span>参数</span> <span class="text-count">({{ apiRequest?.param.length }})</span>
+        <span>参数</span>
+        <span class="text-count">({{ apiRequest ? apiRequest.param.length : 0 }})</span>
       </div>
       <div class="label-test-style" @click="onClickReq('2')" :class="{ active: labelRef === '2' }">
-        <span>请求头</span> <span class="text-count">({{ apiRequest?.headers.length }})</span>
+        <span>请求头</span>
+        <span class="text-count">({{ apiRequest ? apiRequest.headers.length : 0 }})</span>
       </div>
       <div class="label-test-style" @click="onClickReq('3')" :class="{ active: labelRef === '3' }">
         <span>请求体</span>

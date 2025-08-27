@@ -3,7 +3,7 @@ import { ReqRow } from "./reqRow";
 export interface ApiRequest {
   apiId: string;
   apiName: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: string; // 请求方法，如 GET、POST 等
   url: string;
   param: ReqRow[]; // 请求参数(get请求时传输的传输)
   headers: ReqRow[]; // 请求头

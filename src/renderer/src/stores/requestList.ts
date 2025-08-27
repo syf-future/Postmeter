@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { FolderRequest, ApiRequest } from "@renderer/interfaces/request"
 import { SequenceUtil } from "@renderer/utils/SequenceUtil";
+
 // 创建初始的请求列表
 const initialRequestList: FolderRequest[] = [
     {

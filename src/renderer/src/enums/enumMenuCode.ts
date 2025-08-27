@@ -11,4 +11,6 @@ export enum EnumMenuCode{
     DELETE_FOLDER = "删除文件夹",
 
     ADD_FFOLDER = "新建集合",
+
+    SAVE_API = "保存API",
 }

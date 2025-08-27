@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import Dropdown from '@renderer/templates/dropdown.vue'
 import { storeToRefs } from 'pinia'
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { nowApiTable } = storeToRefs(apiTablesStore())
+const { setUpdateApiTable } = apiTablesStore()
 
 // 请求的类型
 const apiType = ref<string>('GET')
@@ -14,10 +15,32 @@ const onSelect = (item: string) => {
 }
 const types = ['GET', 'POST', 'PUT', 'DELETE']
 
+onMounted(() => {
+  if (nowApiTable.value) {
+    apiType.value = nowApiTable.value.method
+    apiInput.value = nowApiTable.value.url
+  }
+})
+// 监听当前选中的apiTable变化，更新请求类型和url
 watch(nowApiTable, (newVal) => {
   if (newVal) {
     apiType.value = newVal.method
     apiInput.value = newVal.url
+  }
+})
+
+// 监听请求类型的变化。
+watch(apiType, (newType) => {
+  if (nowApiTable.value && nowApiTable.value.method !== newType) {
+    nowApiTable.value.method = newType
+    setUpdateApiTable(nowApiTable.value)
+  }
+})
+// 监听请求url的变化
+watch(apiInput, (newUrl) => {
+  if (nowApiTable.value && nowApiTable.value.url !== newUrl) {
+    nowApiTable.value.url = newUrl
+    setUpdateApiTable(nowApiTable.value)
   }
 })
 </script>

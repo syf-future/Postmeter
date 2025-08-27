@@ -7,10 +7,7 @@ interface Row {
   value: string
 }
 
-const rows = ref<Row[]>([
-  { checked: true, key: 'foo', value: 'bar' },
-  { checked: false, key: 'hello', value: 'reqable' }
-])
+const rows = ref<Row[]>([])
 </script>
 
 <template>

@@ -36,8 +36,7 @@ onMounted(() => {
 watch(
   () => props.apiRequest,
   (newApiRequest) => {
-    console.log('监听到newReqParam变化:', newApiRequest)
-    rows.value = [...(props.apiRequest ? props.apiRequest.headers : [])] // 浅拷贝一份
+    rows.value = [...(newApiRequest ? newApiRequest.headers : [])]
   }
 )
 </script>

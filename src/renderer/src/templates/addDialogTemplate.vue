@@ -2,7 +2,9 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { requestListStore } from '@renderer/stores/requestList'
-const { addFolder, addApi, updateFolder, updateApi } = requestListStore()
+const { addFolder, addApi, updateFolder, updateApi, deleteFolder, deleteApi } = requestListStore()
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+const { deleteApiTables, clearUpdateApiTables } = apiTablesStore()
 import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
 import { FolderRequest, ApiRequest } from '@renderer/interfaces/request'
 
@@ -45,6 +47,11 @@ const collectionName = ref('')
 
 // 关闭方法
 const handleCancel = () => {
+  if (EnumMenuCode.SAVE_API === props.label) {
+    if (props.apiRequest) {
+      deleteApiTables(props.apiRequest.apiId)
+    }
+  }
   collectionName.value = ''
   emit('update:isOpenDialog', false)
 }
@@ -74,6 +81,27 @@ const handleConfirm = () => {
       updateApi(props.apiRequest, props.requestFolder.folderId)
     }
   }
+  // 删除文件夹
+  if (EnumMenuCode.DELETE_FOLDER === props.label) {
+    if (props.requestFolder) {
+      deleteFolder(props.requestFolder.folderId)
+    }
+  }
+  // 删除API
+  if (EnumMenuCode.DELETE_API === props.label) {
+    if (props.requestFolder && props.apiRequest) {
+      deleteApi(props.requestFolder.folderId, props.apiRequest.apiId)
+    }
+  }
+  // 保存API
+  if (EnumMenuCode.SAVE_API === props.label) {
+    if (props.apiRequest) {
+      updateApi(props.apiRequest)
+      clearUpdateApiTables(props.apiRequest)
+      deleteApiTables(props.apiRequest.apiId)
+    }
+  }
+
   handleCancel()
 }
 </script>
@@ -93,22 +121,44 @@ const handleConfirm = () => {
       </div>
     </template>
 
-    <div class="dialog-body-content">
+    <div
+      class="dialog-body-content"
+      v-if="
+        label !== EnumMenuCode.DELETE_FOLDER &&
+        label !== EnumMenuCode.DELETE_API &&
+        label !== EnumMenuCode.SAVE_API
+      "
+    >
       <span class="label-text">名称<span class="required-star">*</span></span>
       <el-input v-model="collectionName" class="custom-input" />
     </div>
 
     <template #footer>
       <div class="dialog-footer">
-        <div class="custom-button cancel-button" @click="handleCancel">取消</div>
+        <div class="custom-button cancel-button" @click="handleCancel">关闭</div>
+        <!-- 删除操作时 -->
         <div
-          v-if="collectionName.length > 0"
+          v-if="label === EnumMenuCode.DELETE_FOLDER || label === EnumMenuCode.DELETE_API"
+          class="custom-button delete-confirm-button"
+          @click="handleConfirm"
+        >
+          确定
+        </div>
+        <div
+          v-else-if="label === EnumMenuCode.SAVE_API"
+          class="custom-button save-button"
+          @click="handleConfirm"
+        >
+          保存
+        </div>
+        <div
+          v-else-if="collectionName.length > 0"
           class="custom-button confirm-button"
           @click="handleConfirm"
         >
-          完成
+          确定
         </div>
-        <div v-else class="custom-button no-confirm-button">完成</div>
+        <div v-else class="custom-button no-confirm-button">确定</div>
       </div>
     </template>
   </el-dialog>
@@ -117,8 +167,6 @@ const handleConfirm = () => {
 <style lang="scss">
 .el-dialog {
   background-color: #363434;
-  height: 200px;
-  width: 480px;
 }
 
 .dialog-header {
@@ -157,8 +205,8 @@ const handleConfirm = () => {
 
     // 输入框聚焦
     &.is-focus {
-      box-shadow: 0 0 0 1px #67c23a;
-      border-color: #67c23a;
+      box-shadow: 0 0 0 1px var(--en-c-subject-color1);
+      border-color: var(--en-c-subject-color1);
     }
 
     // 输入框内容颜色
@@ -186,11 +234,18 @@ const handleConfirm = () => {
   }
 
   .cancel-button {
-    color: #67c23a;
+    color: var(--en-c-subject-color1);
   }
 
   .confirm-button {
-    color: #67c23a;
+    color: var(--en-c-subject-color1);
+  }
+  .save-button {
+    color: #c6f104; // 蓝色
+    &:hover {
+      background-color: #636161;
+      cursor: pointer;
+    }
   }
 
   .no-confirm-button {
@@ -199,6 +254,13 @@ const handleConfirm = () => {
 
   .cancel-button:hover,
   .confirm-button:hover {
+    background-color: #636161;
+    cursor: pointer;
+  }
+}
+.delete-confirm-button {
+  color: #ff4d4f; // 红色
+  &:hover {
     background-color: #636161;
     cursor: pointer;
   }

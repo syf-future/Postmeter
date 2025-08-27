@@ -7,7 +7,7 @@ import MenuTemplate from '@renderer/templates/menuTemplate.vue'
 import AddFolderDialog from '@renderer/templates/addDialogTemplate.vue'
 import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
 import { requestListStore } from '@renderer/stores/requestList'
-const { addFolder, deleteFolder } = requestListStore()
+const { addFolder } = requestListStore()
 
 // 每个组件实例都会有自己的 isFolderOpen 状态
 const isFolderOpen = ref(false)
@@ -59,7 +59,7 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
   if (EnumMenuCode.DELETE_FOLDER === enumMenuCode) {
     // 处理删除文件夹的逻辑
     console.log('删除文件夹')
-    deleteFolder(props.requestFolder.folderId)
+    isOpenDialog.value = true
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 // 水平/垂直布局状态
 import { useLayoutStore } from '@renderer/stores/layoutStores'
 const { updateLayout } = useLayoutStore()
@@ -22,19 +22,69 @@ function startScrollRight(): void {
 }
 
 /**api标签用法 */
-import { storeToRefs } from 'pinia'
-import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 import { ApiRequest } from '@renderer/interfaces/request'
-const { apiTables, nowApiTable } = storeToRefs(apiTablesStore())
-const { setNowApiTable, deleteApiTables } = apiTablesStore()
+import { storeToRefs } from 'pinia'
+import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
+import AddDialogTemplate from '@renderer/templates/addDialogTemplate.vue'
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+const { apiTables, nowApiTable, updateApiTables } = storeToRefs(apiTablesStore())
+const { setNowApiTable, deleteApiTables, getUpdateApiTable, clearUpdateApiTables } =
+  apiTablesStore()
+
+import { requestListStore } from '@renderer/stores/requestList'
+const { updateApi } = requestListStore()
 // 点击标签
 function onClickApiTable(apiTable: ApiRequest): void {
   setNowApiTable(apiTable)
 }
+const saveApiRequest = ref<ApiRequest>()
+const isOpenDialog = ref<boolean>(false) // 定义弹窗的状态
+
+// 保存api请求
+function saveApi(): void {
+  if (nowApiTable.value) {
+    const apiRequest = getUpdateApiTable(nowApiTable.value)
+    updateApi(apiRequest)
+    clearUpdateApiTables(apiRequest)
+  }
+}
+
 // 点击删除
 function onCLickDeleteApiTable(apiTable: ApiRequest): void {
-  deleteApiTables(apiTable.apiId)
+  // 已经保存则直接退出
+  if (!updateApiIds.value.includes(apiTable.apiId)) {
+    deleteApiTables(apiTable.apiId)
+    return
+  }
+  // 未保存则打开弹窗
+  saveApiRequest.value = apiTable
+  isOpenDialog.value = true
 }
+
+const updateApiIds = ref<string[]>([])
+watch(
+  updateApiTables,
+  (newUpdateApiTables) => {
+    updateApiIds.value = newUpdateApiTables.map((item) => item.apiId)
+  },
+  { deep: true } // deep深度监听
+)
+// 监听 保存快捷键 Ctrl+S 或 Cmd+S
+onMounted(() => {
+  const handleSaveShortcut = (event: KeyboardEvent) => {
+    // Mac ⌘Command + S   或   Windows Ctrl + S
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+      event.preventDefault() // 阻止默认的“保存网页”行为
+      saveApi() // 调用你的保存方法
+    }
+  }
+
+  window.addEventListener('keydown', handleSaveShortcut)
+
+  onUnmounted(() => {
+    window.removeEventListener('keydown', handleSaveShortcut)
+  })
+})
 </script>
 
 <template>
@@ -54,7 +104,10 @@ function onCLickDeleteApiTable(apiTable: ApiRequest): void {
         class="apiTabsStyle"
         v-for="(apiTable, index) in apiTables"
         :key="index"
-        :class="{ active: nowApiTable?.apiId === apiTable.apiId }"
+        :class="{
+          active: nowApiTable?.apiId === apiTable.apiId,
+          'need-save': updateApiIds.includes(apiTable.apiId)
+        }"
       >
         <div class="tab-title-api" @click="onClickApiTable(apiTable)">
           <svg class="icon" aria-hidden="true">
@@ -88,6 +141,15 @@ function onCLickDeleteApiTable(apiTable: ApiRequest): void {
           <use xlink:href="#icon-gengduo"></use>
         </svg>
       </div>
+    </div>
+
+    <!-- 是否保存弹窗 -->
+    <div>
+      <AddDialogTemplate
+        v-model:isOpenDialog="isOpenDialog"
+        :label="EnumMenuCode.SAVE_API"
+        :apiRequest="saveApiRequest"
+      />
     </div>
   </div>
 </template>
@@ -215,6 +277,23 @@ function onCLickDeleteApiTable(apiTable: ApiRequest): void {
       width: 16px;
       height: 16px;
     }
+  }
+}
+
+// 需要保存的api标签样式
+.apiTabsStyle.need-save {
+  position: relative; // 当前标签相对定位，方便伪元素定位
+
+  // 在元素的右上角插入一个小圆点
+  &::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: rgb(216, 244, 4);
+    border-radius: 50%;
   }
 }
 </style>

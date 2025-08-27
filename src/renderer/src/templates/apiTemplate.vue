@@ -6,7 +6,7 @@ import MenuTemplate from '@renderer/templates/menuTemplate.vue'
 import AddFolderDialog from '@renderer/templates/addDialogTemplate.vue'
 import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
 import { requestListStore } from '@renderer/stores/requestList'
-const { addApi, deleteApi } = requestListStore()
+const { addApi } = requestListStore()
 // 通过defineProps 宏函数来接收父组件传的数据
 const props = defineProps<{
   apiRequest: ApiRequest
@@ -59,7 +59,8 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
   }
   if (EnumMenuCode.DELETE_API === enumMenuCode) {
     // 处理删除API的逻辑
-    deleteApi(props.requestFolder.folderId, props.apiRequest.apiId)
+    isOpenDialog.value = true
+    // deleteApi(props.requestFolder.folderId, props.apiRequest.apiId)
   }
 }
 
@@ -68,8 +69,8 @@ import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { addApiTables, setNowApiTable } = apiTablesStore()
 // 点击api。增加标签，设置当前标签
 function onClickApi(): void {
-  console.log("点击api请求");
-  
+  console.log('点击api请求')
+
   addApiTables(props.apiRequest)
   setNowApiTable(props.apiRequest)
 }
