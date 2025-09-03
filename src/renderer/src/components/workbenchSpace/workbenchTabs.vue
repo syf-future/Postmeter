@@ -292,7 +292,7 @@ onMounted(() => {
     right: 4px;
     width: 8px;
     height: 8px;
-    background-color: rgb(216, 244, 4);
+    background-color: var(--en-c-subject-color1);
     border-radius: 50%;
   }
 }

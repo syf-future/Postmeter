@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import WorkbenchRespHeader from '@renderer/templates/workbenchRespHeader.vue'
 import WorkbenchRespBody from '@renderer/templates/workbenchRespBody.vue'
+import { storeToRefs } from 'pinia'
+import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+import { ApiRequest } from '@renderer/interfaces/request'
+const { nowApiTable } = storeToRefs(apiTablesStore())
+const apiTable = ref<ApiRequest>()
+watch(
+  nowApiTable,
+  (newNowApiTable) => {
+    apiTable.value = newNowApiTable
+  },
+  { deep: true } // deep深度监听
+)
 
 // 表示选中的标签
 const labelRef = ref<string>('1')
@@ -11,7 +23,7 @@ const labelRef = ref<string>('1')
   <div style="width: 100%; height: 100%">
     <div class="request-label-style">
       <div class="label-test-style" @click="labelRef = '1'" :class="{ active: labelRef === '1' }">
-        <span>响应头</span> <span class="text-count">({{ 0 }})</span>
+        <span>响应头</span> <span class="text-count">({{ apiTable?.headers.length }})</span>
       </div>
       <div class="label-test-style" @click="labelRef = '2'" :class="{ active: labelRef === '2' }">
         <span>响应体</span>

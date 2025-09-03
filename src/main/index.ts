@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { registerApiHandler } from '../ipcHandlers/apiHandler'
 
 // 创建主窗口
 function createWindow(): void {
@@ -13,7 +14,7 @@ function createWindow(): void {
     minHeight: 750, // 最小高度
     show: false, // 初始不显示，等准备好再显示
     autoHideMenuBar: true, // 自动隐藏菜单栏
-    title:"Postmeter", // 窗口标题
+    title: "Postmeter", // 窗口标题
     ...(process.platform === 'linux' ? { icon } : {}), // Linux下设置图标
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'), // 预加载脚本
@@ -54,6 +55,9 @@ app.whenReady().then(() => {
   // IPC测试，收到'ping'消息时输出'pong'
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('hello', () => console.log('word'))
+
+  // ⭐ 注册 API 请求 handler
+  registerApiHandler()
 
   // 创建主窗口
   createWindow()

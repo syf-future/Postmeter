@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import WorkbenchParam from '@renderer/templates/workbenchReqParam.vue'
 import WorkbenchReqHeader from '@renderer/templates/workbenchReqHeader.vue'
 import WorkbenchReqBody from '@renderer/templates/workbenchReqBody.vue'
@@ -11,6 +11,11 @@ const { getUpdateApiTable } = apiTablesStore()
 // 表示选中的标签
 const labelRef = ref<string>('1')
 const apiRequest = ref<ApiRequest>()
+onMounted(() => {
+  if (nowApiTable.value) {
+    apiRequest.value = getUpdateApiTable(nowApiTable.value)
+  }
+})
 watch(nowApiTable, (newVal) => {
   if (newVal) {
     apiRequest.value = getUpdateApiTable(newVal)

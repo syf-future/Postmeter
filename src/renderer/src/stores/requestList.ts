@@ -12,8 +12,8 @@ const initialRequestList: FolderRequest[] = [
             {
                 apiId: SequenceUtil.nextId(),
                 apiName: '默认API1',
-                method: 'GET',
-                url: 'http://localhost',
+                method: 'POST',
+                url: 'http://localhost:8080/test/test1',
                 param: [],
                 headers: [],
                 body: ''

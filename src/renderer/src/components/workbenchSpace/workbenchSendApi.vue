@@ -4,7 +4,7 @@ import Dropdown from '@renderer/templates/dropdown.vue'
 import { storeToRefs } from 'pinia'
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { nowApiTable } = storeToRefs(apiTablesStore())
-const { setUpdateApiTable } = apiTablesStore()
+const { setUpdateApiTable, getUpdateApiTable } = apiTablesStore()
 
 // 请求的类型
 const apiType = ref<string>('GET')
@@ -43,6 +43,24 @@ watch(apiInput, (newUrl) => {
     setUpdateApiTable(nowApiTable.value)
   }
 })
+
+/* 发送api请求 */
+import { sendApiRequest } from '@renderer/utils/ApiUtil'
+function sendApi() {
+  console.log('发送API请求')
+  if (nowApiTable.value) {
+    const updatedRequest = getUpdateApiTable(nowApiTable.value)
+    sendApiRequest(updatedRequest)
+      .then((response) => {
+        console.log('API请求成功,响应数据:', response)
+        // 这里可以处理响应数据，比如更新UI等
+      })
+      .catch((error) => {
+        console.error('API请求失败,错误信息:', error)
+        // 这里可以处理错误信息，比如显示错误提示等
+      })
+  }
+}
 </script>
 
 <template>
@@ -53,8 +71,8 @@ watch(apiInput, (newUrl) => {
       </div>
       <el-input v-model="apiInput" class="custom-input" />
     </div>
-    <div class="api-send">
-      <span @click="" style="margin-left: 10px">发送</span>
+    <div class="api-send" @click="sendApi">
+      <p>发送</p>
     </div>
   </div>
 </template>
@@ -67,14 +85,14 @@ watch(apiInput, (newUrl) => {
   border-bottom: 1px solid var(--ev-c-border-color1);
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .api-input {
   display: flex;
   height: 50px;
   width: 85%;
-  margin-left: 10px;
+  margin-left: 15px;
   .api-dropdow {
     height: 100%;
     width: 140px;
@@ -126,7 +144,7 @@ watch(apiInput, (newUrl) => {
   border: 1px solid var(--ev-c-border-color1);
   cursor: pointer;
   background-color: var(--ev-c-background-color1);
-
+  margin-right: 15px;
   &:hover {
     background-color: var(--ev-c-background-color3);
     color: var(--ev-c-text-color2);
