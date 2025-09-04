@@ -5,7 +5,10 @@ import { storeToRefs } from 'pinia'
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { nowApiTable } = storeToRefs(apiTablesStore())
 const { setUpdateApiTable, getUpdateApiTable } = apiTablesStore()
-
+// 引入 requestListStore
+import { ApiResponse } from '@renderer/interfaces/response'
+import { responseStore } from '@renderer/stores/responseStores'
+const { setNowResponse, addOrUpdateResponse } = responseStore()
 // 请求的类型
 const apiType = ref<string>('GET')
 // 请求的url
@@ -44,20 +47,39 @@ watch(apiInput, (newUrl) => {
   }
 })
 
+const apiResponse: ApiResponse = {
+  apiId: nowApiTable.value ? nowApiTable.value.apiId : '',
+  status: 0,
+  isResponse: false,
+  date: '',
+  headers: {}
+}
 /* 发送api请求 */
 import { sendApiRequest } from '@renderer/utils/ApiUtil'
 function sendApi() {
   console.log('发送API请求')
   if (nowApiTable.value) {
+    apiResponse.apiId = nowApiTable.value.apiId
+    addOrUpdateResponse(apiResponse) // 先添加一个空的响应，表示正在请求
     const updatedRequest = getUpdateApiTable(nowApiTable.value)
     sendApiRequest(updatedRequest)
       .then((response) => {
         console.log('API请求成功,响应数据:', response)
-        // 这里可以处理响应数据，比如更新UI等
+        apiResponse.isResponse = true
+        apiResponse.status = response.status
+        apiResponse.success = response.success
+        apiResponse.date = response.data
+        apiResponse.headers = response.headers
+        addOrUpdateResponse(apiResponse) // 更新响应数据
       })
       .catch((error) => {
         console.error('API请求失败,错误信息:', error)
-        // 这里可以处理错误信息，比如显示错误提示等
+        apiResponse.isResponse = true
+        apiResponse.status = error.status
+        apiResponse.success = error.success
+        apiResponse.date = error.data
+        apiResponse.headers = error.headers
+        addOrUpdateResponse(apiResponse) // 更新响应数据
       })
   }
 }

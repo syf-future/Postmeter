@@ -1,13 +1,8 @@
 /** 请求头列表模板 */
 <script setup lang="ts">
-import { ref } from 'vue'
-interface Row {
-  checked: boolean
-  key: string
-  value: string
-}
-
-const rows = ref<Row[]>([])
+const props = defineProps<{
+  headers: Record<string, string> // 如果 headers 是对象
+}>()
 </script>
 
 <template>
@@ -20,15 +15,15 @@ const rows = ref<Row[]>([])
         border="1"
         style="border-collapse: collapse; width: 100%; background: var(--ev-c-background-color2)"
       >
-        <tr v-for="(row, index) in rows" :key="index">
+        <tr v-for="(value, key) in props.headers" :key="key">
           <!-- 可输入的 key -->
           <td>
-            <p class="table-title">{{ row.key }}</p>
+            <p class="table-title">{{ key }}</p>
           </td>
 
           <!-- 可输入的 value -->
           <td>
-            <p class="table-title">{{ row.value }}</p>
+            <p class="table-title">{{ value }}</p>
           </td>
         </tr>
       </table>

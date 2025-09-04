@@ -1,19 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import WorkbenchRespHeader from '@renderer/templates/workbenchRespHeader.vue'
 import WorkbenchRespBody from '@renderer/templates/workbenchRespBody.vue'
 import { storeToRefs } from 'pinia'
-import { apiTablesStore } from '@renderer/stores/apiTablesStores'
-import { ApiRequest } from '@renderer/interfaces/request'
-const { nowApiTable } = storeToRefs(apiTablesStore())
-const apiTable = ref<ApiRequest>()
-watch(
-  nowApiTable,
-  (newNowApiTable) => {
-    apiTable.value = newNowApiTable
-  },
-  { deep: true } // deep深度监听
-)
+// 引入 requestListStore
+import { responseStore } from '@renderer/stores/responseStores'
+const { apiResponse } = storeToRefs(responseStore())
 
 // 表示选中的标签
 const labelRef = ref<string>('1')
@@ -23,7 +15,7 @@ const labelRef = ref<string>('1')
   <div style="width: 100%; height: 100%">
     <div class="request-label-style">
       <div class="label-test-style" @click="labelRef = '1'" :class="{ active: labelRef === '1' }">
-        <span>响应头</span> <span class="text-count">({{ apiTable?.headers.length }})</span>
+        <span>响应头</span> <span class="text-count">({{ apiResponse?.headers.length }})</span>
       </div>
       <div class="label-test-style" @click="labelRef = '2'" :class="{ active: labelRef === '2' }">
         <span>响应体</span>
@@ -34,8 +26,11 @@ const labelRef = ref<string>('1')
     </div>
 
     <!-- 根据选中的标签 显示对应的组件 -->
-    <WorkbenchRespHeader v-show="labelRef === '1'" />
-    <WorkbenchRespBody v-show="labelRef === '2'" />
+    <WorkbenchRespHeader v-show="labelRef === '1'" :headers="apiResponse.headers" />
+    <WorkbenchRespBody
+      v-show="labelRef === '2'"
+      :respDate="JSON.stringify(apiResponse.date, null, 2)"
+    />
   </div>
 </template>
 

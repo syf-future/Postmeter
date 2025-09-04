@@ -14,8 +14,6 @@ const onSelect = (item: string) => {
 const isFormat = ref<'off' | 'on'>('off')
 // 是否自动换行
 const isLine = ref<'off' | 'on'>('off')
-// 输入的数据
-const sendDate = ref<string>('')
 
 function onIsFormat(): void {
   if (isFormat.value === 'off') {
@@ -31,6 +29,11 @@ function onIsLine(): void {
     isLine.value = 'off'
   }
 }
+
+// 将 response 的 date 赋值给 respDate 用于展示
+const props = defineProps<{
+  respDate: string // 如果 headers 是对象
+}>()
 </script>
 
 <template>
@@ -75,7 +78,7 @@ function onIsLine(): void {
     <!-- JSON 编辑器区域 -->
     <div class="param-json">
       <JsonEditorTemplate
-        v-model="sendDate"
+        v-model="props.respDate"
         :language="apiType.toLowerCase()"
         :isFormat="isFormat"
         :isLine="isLine"

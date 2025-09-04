@@ -26,16 +26,21 @@ import { ApiRequest } from '@renderer/interfaces/request'
 import { storeToRefs } from 'pinia'
 import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
 import AddDialogTemplate from '@renderer/templates/addDialogTemplate.vue'
+// 引入 apiTablesStore
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { apiTables, nowApiTable, updateApiTables } = storeToRefs(apiTablesStore())
 const { setNowApiTable, deleteApiTables, getUpdateApiTable, clearUpdateApiTables } =
   apiTablesStore()
-
+// 引入 requestListStore
 import { requestListStore } from '@renderer/stores/requestList'
 const { updateApi } = requestListStore()
+// 引入 responseStore
+import { responseStore } from '@renderer/stores/responseStores'
+const { setNowResponse } = responseStore()
 // 点击标签
 function onClickApiTable(apiTable: ApiRequest): void {
   setNowApiTable(apiTable)
+  setNowResponse(apiTable.apiId)
 }
 const saveApiRequest = ref<ApiRequest>()
 const isOpenDialog = ref<boolean>(false) // 定义弹窗的状态
