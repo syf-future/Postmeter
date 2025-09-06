@@ -59,6 +59,7 @@ function onCLickDeleteApiTable(apiTable: ApiRequest): void {
   // 已经保存则直接退出
   if (!updateApiIds.value.includes(apiTable.apiId)) {
     deleteApiTables(apiTable.apiId)
+    setNowResponse(apiTable.apiId)
     return
   }
   // 未保存则打开弹窗

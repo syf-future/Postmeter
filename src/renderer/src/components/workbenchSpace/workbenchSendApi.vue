@@ -8,7 +8,7 @@ const { setUpdateApiTable, getUpdateApiTable } = apiTablesStore()
 // 引入 requestListStore
 import { ApiResponse } from '@renderer/interfaces/response'
 import { responseStore } from '@renderer/stores/responseStores'
-const { setNowResponse, addOrUpdateResponse } = responseStore()
+const { addOrUpdateResponse } = responseStore()
 // 请求的类型
 const apiType = ref<string>('GET')
 // 请求的url
@@ -47,19 +47,18 @@ watch(apiInput, (newUrl) => {
   }
 })
 
-const apiResponse: ApiResponse = {
-  apiId: nowApiTable.value ? nowApiTable.value.apiId : '',
-  status: 0,
-  isResponse: false,
-  date: '',
-  headers: {}
-}
 /* 发送api请求 */
 import { sendApiRequest } from '@renderer/utils/ApiUtil'
 function sendApi() {
   console.log('发送API请求')
   if (nowApiTable.value) {
-    apiResponse.apiId = nowApiTable.value.apiId
+    const apiResponse: ApiResponse = {
+      apiId: nowApiTable.value ? nowApiTable.value.apiId : '',
+      status: 1,
+      isResponse: false,
+      date: '',
+      headers: {}
+    }
     addOrUpdateResponse(apiResponse) // 先添加一个空的响应，表示正在请求
     const updatedRequest = getUpdateApiTable(nowApiTable.value)
     sendApiRequest(updatedRequest)
@@ -69,6 +68,9 @@ function sendApi() {
         apiResponse.status = response.status
         apiResponse.success = response.success
         apiResponse.date = response.data
+        if (response.status !== 200) {
+          apiResponse.date = response.statusText
+        }
         apiResponse.headers = response.headers
         addOrUpdateResponse(apiResponse) // 更新响应数据
       })
@@ -77,7 +79,7 @@ function sendApi() {
         apiResponse.isResponse = true
         apiResponse.status = error.status
         apiResponse.success = error.success
-        apiResponse.date = error.data
+        apiResponse.date = error
         apiResponse.headers = error.headers
         addOrUpdateResponse(apiResponse) // 更新响应数据
       })
@@ -160,8 +162,8 @@ function sendApi() {
   align-items: center;
   height: 50px;
   width: 80px;
-  color: var(--ev-c-text-color1);
-  font-size: 20px;
+  color: var(--ev-c-text-color3);
+  font-size: 18px;
   border-radius: 5px;
   border: 1px solid var(--ev-c-border-color1);
   cursor: pointer;
@@ -170,6 +172,13 @@ function sendApi() {
   &:hover {
     background-color: var(--ev-c-background-color3);
     color: var(--ev-c-text-color2);
+  }
+  &:active {
+    transform: scale(0.95); // 点击时缩小一点
+    background-color: var(--ev-c-background-color1); // 按下时颜色变化
+  }
+  p {
+    font-weight: bold;
   }
 }
 </style>

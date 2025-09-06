@@ -1,7 +1,7 @@
 /** 请求头列表模板 */
 <script setup lang="ts">
 const props = defineProps<{
-  headers: Record<string, string> // 如果 headers 是对象
+  headers?: Record<string, string> // 如果 headers 是对象
 }>()
 </script>
 
@@ -16,13 +16,10 @@ const props = defineProps<{
         style="border-collapse: collapse; width: 100%; background: var(--ev-c-background-color2)"
       >
         <tr v-for="(value, key) in props.headers" :key="key">
-          <!-- 可输入的 key -->
-          <td>
+          <td class="table-cell">
             <p class="table-title">{{ key }}</p>
           </td>
-
-          <!-- 可输入的 value -->
-          <td>
+          <td class="table-cell">
             <p class="table-title">{{ value }}</p>
           </td>
         </tr>
@@ -55,16 +52,21 @@ const props = defineProps<{
   overflow: auto; /* 超出部分显示滚动条 */
 }
 
-/* 输入框样式 */
+.table-cell {
+  width: 50%; /* 两列等宽 */
+  white-space: nowrap; /* 不换行 */
+  overflow: hidden; /* 超出隐藏 */
+  text-overflow: ellipsis; /* 超长显示省略号 */
+  max-width: 0; /* 关键：让 table 自动分配宽度时，溢出才生效 */
+}
+
 .table-title {
-  width: 50%;
-  height: 39px;
+  margin: 0;
+  padding: 0 10px;
+  font-size: 18px;
   background: transparent;
   display: flex;
   align-items: center;
-  border: 1px solid transparent; /* 先留一个边框 */
-  outline: none;
-  font-size: 18px;
-  margin-left: 10px;
+  height: 39px;
 }
 </style>

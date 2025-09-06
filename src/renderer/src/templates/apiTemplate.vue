@@ -7,6 +7,11 @@ import AddFolderDialog from '@renderer/templates/addDialogTemplate.vue'
 import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
 import { requestListStore } from '@renderer/stores/requestList'
 const { addApi } = requestListStore()
+
+// 引入 responseStore
+import { responseStore } from '@renderer/stores/responseStores'
+const { setNowResponse } = responseStore()
+
 // 通过defineProps 宏函数来接收父组件传的数据
 const props = defineProps<{
   apiRequest: ApiRequest
@@ -46,6 +51,7 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     console.log('打开API')
     addApiTables(props.apiRequest)
     setNowApiTable(props.apiRequest)
+    setNowResponse(props.apiRequest.apiId)
   }
   if (EnumMenuCode.COPY_API === enumMenuCode) {
     // 处理复制API的逻辑
@@ -70,9 +76,9 @@ const { addApiTables, setNowApiTable } = apiTablesStore()
 // 点击api。增加标签，设置当前标签
 function onClickApi(): void {
   console.log('点击api请求')
-
   addApiTables(props.apiRequest)
   setNowApiTable(props.apiRequest)
+  setNowResponse(props.apiRequest.apiId)
 }
 </script>
 

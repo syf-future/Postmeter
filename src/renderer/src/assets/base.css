@@ -1,6 +1,8 @@
 :root {
   /* 主题色 */
   --en-c-subject-color1: #67c23a;
+  --en-c-subject-color2: #65a146;
+
   /* 背景色 */
   --ev-c-background-color1: #393838;
   --ev-c-background-color2: #2f2c2c;
@@ -68,7 +70,7 @@ body {
   color: var(--color-text);
   background: var(--color-background);
   line-height: 1.6;
-  font-family:
+  /* font-family:
     Inter,
     -apple-system,
     BlinkMacSystemFont,
@@ -80,7 +82,7 @@ body {
     'Fira Sans',
     'Droid Sans',
     'Helvetica Neue',
-    sans-serif;
+    sans-serif; */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
