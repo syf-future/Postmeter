@@ -13,15 +13,39 @@ const labelRef = ref<string>('1')
 const apiRequest = ref<ApiRequest>()
 onMounted(() => {
   if (nowApiTable.value) {
-    apiRequest.value = getUpdateApiTable(nowApiTable.value)
+    apiRequest.value = getApiRequest(nowApiTable.value)
   }
 })
-watch(nowApiTable, (newVal) => {
-  if (newVal) {
-    apiRequest.value = getUpdateApiTable(newVal)
-    labelRef.value = '1'
+watch(nowApiTable, (newVal, oldVal) => {
+  if (oldVal && newVal) {
+    const request = getApiRequest(newVal)
+    apiRequest.value = { ...request }
+    if (oldVal.apiId != newVal.apiId) {
+      labelRef.value = '1'
+    }
   }
 })
+
+const getApiRequest = (apiRequest: ApiRequest) => {
+  const request = getUpdateApiTable(apiRequest)
+  request.headers = request.headers.filter((header) => header.key !== 'Content-Type')
+  if (request.bodyType === 'TEXT') {
+    request.headers.push({ checked: true, key: 'Content-Type', value: 'text/plain' })
+  } else if (request.bodyType === 'JSON') {
+    request.headers.push({
+      checked: true,
+      key: 'Content-Type',
+      value: 'application/json'
+    })
+  } else if (request.bodyType === 'XML') {
+    request.headers.push({
+      checked: true,
+      key: 'Content-Type',
+      value: 'application/xml'
+    })
+  }
+  return request
+}
 
 function onClickReq(num: string): void {
   console.log('点击请求：', num)
@@ -35,7 +59,9 @@ function onClickReq(num: string): void {
     <div class="request-label-style">
       <div class="label-test-style" @click="onClickReq('1')" :class="{ active: labelRef === '1' }">
         <span>参数</span>
-        <span class="text-count">({{ apiRequest ? apiRequest.param.length : 0 }})</span>
+        <span class="text-count" v-if="apiRequest && apiRequest.param.length > 0"
+          >({{ apiRequest ? apiRequest.param.length : 0 }})</span
+        >
       </div>
       <div class="label-test-style" @click="onClickReq('2')" :class="{ active: labelRef === '2' }">
         <span>请求头</span>

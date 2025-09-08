@@ -10,12 +10,33 @@ const props = defineProps<{
   apiRequest?: ApiRequest
 }>()
 
-const types = ['TEXT', 'JSON', 'XML']
+const types = ['无', 'TEXT', 'JSON', 'XML']
 // 下拉选择数据类型
-const apiType = ref('JSON')
+const apiType = ref<string>(
+  props.apiRequest ? (props.apiRequest.bodyType ? props.apiRequest.bodyType : '无') : '无'
+)
+// 监听 apiRequest.bodyType 的变化，更新 apiType
+watch(
+  () => props.apiRequest?.bodyType,
+  (bodyType) => {
+    apiType.value = bodyType ? bodyType : '无'
+    console.log('监听到 apiRequest bodyType变化:', apiType.value)
+  }
+)
+// 监听 apiRequest.body 的变化，更新 sendDate
+watch(
+  () => props.apiRequest?.body,
+  (body) => {
+    sendDate.value = body ? body : ''
+  }
+)
 const onSelect = (item: string) => {
   console.log('点击下拉框类型：', item)
-  apiType.value = item
+  // apiType.value = item
+  if (props.apiRequest) {
+    props.apiRequest.bodyType = item
+    setUpdateApiTable(props.apiRequest)
+  }
 }
 // 是否格式化
 const isFormat = ref<'off' | 'on'>('off')
@@ -24,7 +45,7 @@ const isLine = ref<'off' | 'on'>('off')
 // 输入的数据
 const sendDate = ref<string>(props.apiRequest ? props.apiRequest.body : '')
 watch(sendDate, (newDate) => {
-  if (props.apiRequest) {
+  if (props.apiRequest && props.apiRequest.body !== newDate) {
     props.apiRequest.body = newDate
     setUpdateApiTable(props.apiRequest)
   }
@@ -62,7 +83,6 @@ function onIsLine(): void {
             effect="light"
             content="自动换行"
             placement="bottom"
-            hide-after="100"
             popper-class="is-customized"
           >
             <svg class="icon" aria-hidden="true">
@@ -75,7 +95,6 @@ function onIsLine(): void {
             effect="light"
             content="格式化"
             placement="bottom"
-            hide-after="100"
             popper-class="is-customized"
           >
             <svg class="icon" aria-hidden="true">
@@ -87,7 +106,7 @@ function onIsLine(): void {
     </div>
 
     <!-- JSON 编辑器区域 -->
-    <div class="param-json">
+    <div class="param-json" v-if="apiType !== '无'">
       <JsonEditorTemplate
         v-model="sendDate"
         :language="apiType.toLowerCase()"

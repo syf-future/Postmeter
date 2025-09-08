@@ -15,7 +15,12 @@ const initialRequestList: FolderRequest[] = [
                 method: 'POST',
                 url: 'http://localhost:8080/test/test1',
                 param: [],
-                headers: [],
+                headers: [
+                    { "checked": true, "key": "User-Agent", "value": "Postmeter/1.0" },
+                    { "checked": true, "key": "Connection", "value": "keep-alive" },
+                    { "checked": true, "key": "Accept", "value": "*/*" },
+                    { "checked": true, "key": "Accept-Encoding", "value": "gzip, deflate, br" }
+                ],
                 body: ''
             }
         ]
@@ -30,7 +35,12 @@ const initialRequestList: FolderRequest[] = [
                 method: 'POST',
                 url: 'http://localhost',
                 param: [],
-                headers: [],
+                headers: [
+                    { "checked": true, "key": "User-Agent", "value": "Postmeter/1.0" },
+                    { "checked": true, "key": "Connection", "value": "keep-alive" },
+                    { "checked": true, "key": "Accept", "value": "*/*" },
+                    { "checked": true, "key": "Accept-Encoding", "value": "gzip, deflate, br" }
+                ],
                 body: ''
             }
         ]
@@ -86,7 +96,12 @@ export const requestListStore = defineStore("requestListStore", () => {
             method: 'GET',
             url: '',
             param: [],
-            headers: [],
+            headers: [
+                { "checked": true, "key": "User-Agent", "value": "Postmeter/1.0" },
+                { "checked": true, "key": "Connection", "value": "keep-alive" },
+                { "checked": true, "key": "Accept", "value": "*/*" },
+                { "checked": true, "key": "Accept-Encoding", "value": "gzip, deflate, br" }
+            ],
             body: ''
         }
         const folder = requestList.value.find(item => item.folderId === folderId);

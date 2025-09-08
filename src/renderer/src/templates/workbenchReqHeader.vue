@@ -14,17 +14,17 @@ const rows = ref<ReqRow[]>([])
 
 // 删除行
 const removeRow = (index: number) => {
-  rows.value.splice(index, 1)
   if (props.apiRequest) {
-    props.apiRequest.param = rows.value
+    rows.value.splice(index, 1)
+    props.apiRequest.headers = rows.value
     setUpdateApiTable(props.apiRequest)
   }
 }
 
 // 新增行
 const addRow = () => {
-  rows.value.push({ checked: false, key: '', value: '' })
   if (props.apiRequest) {
+    rows.value.push({ checked: false, key: '', value: '' })
     props.apiRequest.headers = rows.value
     setUpdateApiTable(props.apiRequest)
   }
@@ -36,7 +36,9 @@ onMounted(() => {
 watch(
   () => props.apiRequest,
   (newApiRequest) => {
-    rows.value = [...(newApiRequest ? newApiRequest.headers : [])]
+    if (newApiRequest) {
+      rows.value = [...newApiRequest.headers] // 浅拷贝一份
+    }
   }
 )
 </script>

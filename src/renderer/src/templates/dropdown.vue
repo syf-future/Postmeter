@@ -1,6 +1,6 @@
 /** 下拉框模板 */
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps<{
   label: string
@@ -12,7 +12,14 @@ const emit = defineEmits<{
 }>()
 
 const visible = ref(false)
-const selected = ref<string>('')
+const selected = ref<string>(props.label)
+
+watch(
+  () => props.label,
+  (newLabel) => {
+    selected.value = newLabel // 当 label 改变时，更新 selected 的值
+  }
+)
 
 const toggle = () => {
   visible.value = !visible.value
@@ -52,9 +59,9 @@ const getColorClass = (label: string) => {
 
 <template>
   <div class="dropdown">
-    <div class="dropdown-trigger" :class="getColorClass(selected || props.label)" @click="toggle">
+    <div class="dropdown-trigger" :class="getColorClass(selected)" @click="toggle">
       <p>
-        {{ selected || props.label || '请选择' }}
+        {{ selected || '请选择' }}
       </p>
       <span class="arrow">▼</span>
     </div>
@@ -65,7 +72,9 @@ const getColorClass = (label: string) => {
         @click="selectItem(item)"
         :class="[{ active: activeOption === item }, getColorClass(item)]"
       >
-        {{ item }}
+        <p>
+          {{ item }}
+        </p>
       </li>
     </ul>
   </div>
@@ -98,7 +107,7 @@ const getColorClass = (label: string) => {
   }
 }
 .dropdown-menu {
-  width: 100%;
+  // width: 80px;
   position: absolute;
   cursor: pointer;
   border: 1px solid var(--ev-c-border-color1);
@@ -110,6 +119,9 @@ const getColorClass = (label: string) => {
 .dropdown-menu li {
   padding: 4px 8px;
   border-bottom: 1px solid var(--ev-c-border-color1);
+  p {
+    font-weight: bold; // 加粗
+  }
 }
 // 去掉最后一个 li 的下边框
 .dropdown-menu li:last-child {

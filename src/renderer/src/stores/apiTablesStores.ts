@@ -36,7 +36,14 @@ export const apiTablesStore = defineStore("apiTablesStore", () => {
      * @param apiRequest 
      */
     function setNowApiTable(apiRequest: ApiRequest): void {
-        nowApiTable.value = apiRequest;
+        nowApiTable.value = { ...getUpdateApiTable(apiRequest) } // 确保替换为新引用
+    }
+
+    function updateApiTable(apiRequest: ApiRequest): void {
+        const index = apiTables.value.findIndex(item => item.apiId === apiRequest.apiId);
+        if (index !== -1) {
+            apiTables.value[index] = apiRequest;
+        }
     }
 
 
@@ -69,6 +76,9 @@ export const apiTablesStore = defineStore("apiTablesStore", () => {
             // 3. 如果不存在，将新值添加到数组末尾
             updateApiTables.value.push(apiRequest);
         }
+        if (nowApiTable.value && apiRequest.apiId === nowApiTable.value.apiId) {
+            nowApiTable.value = { ...apiRequest } // 确保替换为新引用
+        }
     }
 
     /**
@@ -79,5 +89,5 @@ export const apiTablesStore = defineStore("apiTablesStore", () => {
         updateApiTables.value = updateApiTables.value.filter(item => item.apiId !== apiRequest.apiId);
     }
 
-    return { apiTables, nowApiTable, updateApiTables, addApiTables, deleteApiTables, setNowApiTable, getUpdateApiTable, setUpdateApiTable, clearUpdateApiTables };
+    return { apiTables, nowApiTable, updateApiTables, addApiTables, deleteApiTables, setNowApiTable, getUpdateApiTable, setUpdateApiTable, clearUpdateApiTables, updateApiTable };
 })

@@ -8,6 +8,7 @@ export interface ApiRequest {
   param: ReqRow[]; // 请求参数(get请求时传输的传输)
   headers: ReqRow[]; // 请求头
   body: string; // POST 请求可能有 body，所以是可选的
+  bodyType?: string; // body 类型，可能是 JSON、XML、Text 等
 }
 
 // 定义文件夹的类型，它包含一个 ApiRequest 数组

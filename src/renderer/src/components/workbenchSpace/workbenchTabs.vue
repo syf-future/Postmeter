@@ -29,7 +29,7 @@ import AddDialogTemplate from '@renderer/templates/addDialogTemplate.vue'
 // 引入 apiTablesStore
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { apiTables, nowApiTable, updateApiTables } = storeToRefs(apiTablesStore())
-const { setNowApiTable, deleteApiTables, getUpdateApiTable, clearUpdateApiTables } =
+const { setNowApiTable, deleteApiTables, updateApiTable, getUpdateApiTable, clearUpdateApiTables } =
   apiTablesStore()
 // 引入 requestListStore
 import { requestListStore } from '@renderer/stores/requestList'
@@ -39,6 +39,7 @@ import { responseStore } from '@renderer/stores/responseStores'
 const { setNowResponse } = responseStore()
 // 点击标签
 function onClickApiTable(apiTable: ApiRequest): void {
+  console.log('点击标签：', apiTable)
   setNowApiTable(apiTable)
   setNowResponse(apiTable.apiId)
 }
@@ -50,6 +51,7 @@ function saveApi(): void {
   if (nowApiTable.value) {
     const apiRequest = getUpdateApiTable(nowApiTable.value)
     updateApi(apiRequest)
+    updateApiTable(apiRequest)
     clearUpdateApiTables(apiRequest)
   }
 }
