@@ -3,53 +3,21 @@ import { ref } from "vue";
 import { FolderRequest, ApiRequest } from "@renderer/interfaces/request"
 import { SequenceUtil } from "@renderer/utils/SequenceUtil";
 
-// 创建初始的请求列表
-const initialRequestList: FolderRequest[] = [
-    {
-        folderId: SequenceUtil.nextId(),
-        folderName: '默认文件夹1',
-        apiItems: [
-            {
-                apiId: SequenceUtil.nextId(),
-                apiName: '默认API1',
-                method: 'POST',
-                url: 'http://localhost:8080/test/test1',
-                param: [],
-                headers: [
-                    { "checked": true, "key": "User-Agent", "value": "Postmeter/1.0" },
-                    { "checked": true, "key": "Connection", "value": "keep-alive" },
-                    { "checked": true, "key": "Accept", "value": "*/*" },
-                    { "checked": true, "key": "Accept-Encoding", "value": "gzip, deflate, br" }
-                ],
-                body: ''
-            }
-        ]
-    },
-    {
-        folderId: SequenceUtil.nextId(),
-        folderName: '默认文件夹2',
-        apiItems: [
-            {
-                apiId: SequenceUtil.nextId(),
-                apiName: '默认API2',
-                method: 'POST',
-                url: 'http://localhost',
-                param: [],
-                headers: [
-                    { "checked": true, "key": "User-Agent", "value": "Postmeter/1.0" },
-                    { "checked": true, "key": "Connection", "value": "keep-alive" },
-                    { "checked": true, "key": "Accept", "value": "*/*" },
-                    { "checked": true, "key": "Accept-Encoding", "value": "gzip, deflate, br" }
-                ],
-                body: ''
-            }
-        ]
-    }
-];
-
 // 定义请求列表的 Pinia store
 export const requestListStore = defineStore("requestListStore", () => {
-    const requestList = ref<FolderRequest[]>(initialRequestList);
+
+    const requestList = ref<FolderRequest[]>([]) // 先空数组初始化
+
+    // 异步加载初始请求列表
+    async function loadRequestList() {
+        try {
+            const list = await window.electronAPI.getApiConfig()
+            requestList.value = list ?? []
+            console.log("加载请求列表:", requestList.value)
+        } catch (error) {
+            console.error("加载请求列表失败:", error)
+        }
+    }
 
     /**
      * 添加一个新的请求文件夹到请求列表 
@@ -61,7 +29,9 @@ export const requestListStore = defineStore("requestListStore", () => {
             folderName: folderName,
             apiItems: []
         }
+        console.log("添加请求文件夹:", requestList.value);
         requestList.value.push(requestFolder);
+        saveRequestList();
     }
 
     /**
@@ -73,6 +43,7 @@ export const requestListStore = defineStore("requestListStore", () => {
         const folder = requestList.value.find(item => item.folderId === folderId);
         if (folder) {
             folder.folderName = folderName;
+            saveRequestList();
         }
     }
 
@@ -82,6 +53,7 @@ export const requestListStore = defineStore("requestListStore", () => {
      */
     function deleteFolder(folderId: string): void {
         requestList.value = requestList.value.filter(item => item.folderId !== folderId);
+        saveRequestList();
     }
 
     /**
@@ -94,7 +66,7 @@ export const requestListStore = defineStore("requestListStore", () => {
             apiId: SequenceUtil.nextId(),
             apiName: apiName,
             method: 'GET',
-            url: '',
+            url: 'http://localhost:8080',
             param: [],
             headers: [
                 { "checked": true, "key": "User-Agent", "value": "Postmeter/1.0" },
@@ -107,6 +79,7 @@ export const requestListStore = defineStore("requestListStore", () => {
         const folder = requestList.value.find(item => item.folderId === folderId);
         if (folder) {
             folder.apiItems.push(apiRequest);
+            saveRequestList();
         }
     }
 
@@ -129,6 +102,7 @@ export const requestListStore = defineStore("requestListStore", () => {
 
             if (apiIndex !== -1) {
                 apiList[apiIndex] = apiRequest;
+                saveRequestList();
             }
         }
     }
@@ -145,9 +119,18 @@ export const requestListStore = defineStore("requestListStore", () => {
             if (folder.apiItems) {
                 // 使用 filter 过滤出不等于 apiId 的项，然后将新数组赋值回去
                 folder.apiItems = folder.apiItems.filter(item => item.apiId !== apiId);
+                saveRequestList();
             }
         }
     }
 
-    return { requestList, addFolder, updateFolder, deleteFolder, addApi, updateApi, deleteApi };
+    /**
+     * 保存请求列表到本地存储
+     */
+    function saveRequestList() {
+        const plainList = JSON.parse(JSON.stringify(requestList.value))
+        console.log("保存请求列表:", plainList)
+        window.electronAPI.saveApiConfig(plainList)
+    }
+    return { requestList, loadRequestList, addFolder, updateFolder, deleteFolder, addApi, updateApi, deleteApi, saveRequestList };
 })

@@ -2,7 +2,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { requestListStore } from '@renderer/stores/requestList'
-const { addFolder, addApi, updateFolder, updateApi, deleteFolder, deleteApi } = requestListStore()
+const { addFolder, addApi, updateFolder, updateApi, deleteFolder, deleteApi, saveRequestList } =
+  requestListStore()
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { deleteApiTables, clearUpdateApiTables } = apiTablesStore()
 import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
@@ -99,6 +100,7 @@ const handleConfirm = () => {
       updateApi(props.apiRequest)
       clearUpdateApiTables(props.apiRequest)
       deleteApiTables(props.apiRequest.apiId)
+      saveRequestList()
     }
   }
 

@@ -25,6 +25,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@monaco-editor/loader": "^1.5.0",
     "axios": "^1.11.0",
+    "electron-store": "^8.2.0",
     "element-plus": "^2.10.5",
     "monaco-editor": "^0.52.2",
     "pinia": "^3.0.3",

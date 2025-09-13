@@ -26,7 +26,7 @@ export async function sendApiRequest(api: ApiRequest) {
   }
 
   // 调用主进程
-  const res = await (window as any).electronAPI.sendApiRequest(config)
+  const res = await window.electronAPI.sendApiRequest(config)
   return res
 }
 

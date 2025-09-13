@@ -33,7 +33,7 @@ const { setNowApiTable, deleteApiTables, updateApiTable, getUpdateApiTable, clea
   apiTablesStore()
 // 引入 requestListStore
 import { requestListStore } from '@renderer/stores/requestList'
-const { updateApi } = requestListStore()
+const { updateApi, saveRequestList } = requestListStore()
 // 引入 responseStore
 import { responseStore } from '@renderer/stores/responseStores'
 const { setNowResponse } = responseStore()
@@ -53,6 +53,7 @@ function saveApi(): void {
     updateApi(apiRequest)
     updateApiTable(apiRequest)
     clearUpdateApiTables(apiRequest)
+    saveRequestList()
   }
 }
 

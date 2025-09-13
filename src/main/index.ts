@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerApiHandler } from '../ipcHandlers/apiHandler'
-
+import { apiConfig } from '../ipcHandlers/apiConfig'
 // 创建主窗口
 function createWindow(): void {
   // 创建浏览器窗口
@@ -56,8 +56,8 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.on('hello', () => console.log('word'))
 
-  // ⭐ 注册 API 请求 handler
-  registerApiHandler()
+  registerApiHandler()  // ⭐ 注册 API 请求 handler
+  apiConfig()           // ⭐ 注册 API 配置 handler
 
   // 创建主窗口
   createWindow()

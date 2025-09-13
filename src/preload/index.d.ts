@@ -1,8 +1,16 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
+import { FolderRequest, ApiRequest } from "@renderer/interfaces/request"
+
+export { }  // 确保这是模块
 
 declare global {
-  interface Window {
-    electron: ElectronAPI
-    api: unknown
+  interface ElectronAPI {
+    sendApiRequest(config: any): Promise<any>;
+    getApiConfig(): FolderRequest[];
+    saveApiConfig(config: FolderRequest[]);
   }
+
+  interface Window {
+    electronAPI: ElectronAPI;
+  }
+
 }
