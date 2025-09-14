@@ -72,6 +72,8 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
 
 /**处理API标签 */
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
+import { storeToRefs } from 'pinia'
+const { nowApiTable } = storeToRefs(apiTablesStore())
 const { addApiTables, setNowApiTable } = apiTablesStore()
 // 点击api。增加标签，设置当前标签
 function onClickApi(): void {
@@ -85,7 +87,11 @@ function onClickApi(): void {
 <!-- api模板 -->
 <template>
   <div id="api-template" @contextmenu.prevent="handleContextMenu">
-    <div class="apiStyle" @click="onClickApi">
+    <div
+      class="apiStyle"
+      @click="onClickApi"
+      :class="{ active: props.apiRequest.apiId === nowApiTable?.apiId }"
+    >
       <span class="methodStyle" :class="`method-${apiRequest.method}`">{{
         apiRequest.method
       }}</span>
@@ -135,6 +141,9 @@ function onClickApi(): void {
   height: 100%;
   margin-left: 20px;
   border-left: 1px solid var(--ev-c-border-color1);
+  &.active {
+    border-left: 2px solid var(--en-c-subject-color1); // 绿色高亮
+  }
 }
 
 .icon {

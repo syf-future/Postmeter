@@ -13,5 +13,4 @@ onMounted(() => {
 
 <template>
   <RouterView />
-  <!-- <a target="_blank" rel="noreferrer" @click="ipcHandle">Send IPC</a> -->
 </template>

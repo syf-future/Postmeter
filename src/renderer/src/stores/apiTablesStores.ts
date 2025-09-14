@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { ApiRequest } from "@renderer/interfaces/request"
+import { SequenceUtil } from "@renderer/utils/SequenceUtil";
 
 // 定义请求列表的 Pinia store
 export const apiTablesStore = defineStore("apiTablesStore", () => {
@@ -12,12 +13,31 @@ export const apiTablesStore = defineStore("apiTablesStore", () => {
      * 新增API请求标签
      * @param apiRequest api请求
      */
-    function addApiTables(apiRequest: ApiRequest): void {
+    function addApiTables(apiRequest: ApiRequest | undefined): ApiRequest {
+        if (!apiRequest) {
+            const apiRequest: ApiRequest = {
+                apiId: SequenceUtil.nextId(),
+                apiName: 'api请求',
+                method: 'GET',
+                url: 'http://localhost:8080',
+                param: [],
+                headers: [
+                    { "checked": true, "key": "User-Agent", "value": "Postmeter/1.0" },
+                    { "checked": true, "key": "Connection", "value": "keep-alive" },
+                    { "checked": true, "key": "Accept", "value": "*/*" },
+                    { "checked": true, "key": "Accept-Encoding", "value": "gzip, deflate, br" }
+                ],
+                body: ''
+            }
+            apiTables.value.push(apiRequest);
+            return apiRequest;
+        };
         const api = apiTables.value.find(item => item.apiId === apiRequest.apiId);
         if (!api) {
             console.log("新增API请求标签:", apiRequest.apiName);
             apiTables.value.push(apiRequest);
         }
+        return apiRequest;
     }
 
     /**

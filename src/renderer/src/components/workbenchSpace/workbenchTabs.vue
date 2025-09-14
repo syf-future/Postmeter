@@ -29,8 +29,14 @@ import AddDialogTemplate from '@renderer/templates/addDialogTemplate.vue'
 // 引入 apiTablesStore
 import { apiTablesStore } from '@renderer/stores/apiTablesStores'
 const { apiTables, nowApiTable, updateApiTables } = storeToRefs(apiTablesStore())
-const { setNowApiTable, deleteApiTables, updateApiTable, getUpdateApiTable, clearUpdateApiTables } =
-  apiTablesStore()
+const {
+  addApiTables,
+  setNowApiTable,
+  deleteApiTables,
+  updateApiTable,
+  getUpdateApiTable,
+  clearUpdateApiTables
+} = apiTablesStore()
 // 引入 requestListStore
 import { requestListStore } from '@renderer/stores/requestList'
 const { updateApi, saveRequestList } = requestListStore()
@@ -43,10 +49,15 @@ function onClickApiTable(apiTable: ApiRequest): void {
   setNowApiTable(apiTable)
   setNowResponse(apiTable.apiId)
 }
-const saveApiRequest = ref<ApiRequest>()
-const isOpenDialog = ref<boolean>(false) // 定义弹窗的状态
+// 点击新增标签
+function addApiTable(): void {
+  const newApi = addApiTables(undefined)
+  setNowApiTable(newApi)
+}
 
 // 保存api请求
+const saveApiRequest = ref<ApiRequest>()
+const isOpenDialog = ref<boolean>(false) // 定义弹窗的状态
 function saveApi(): void {
   if (nowApiTable.value) {
     const apiRequest = getUpdateApiTable(nowApiTable.value)
@@ -139,7 +150,7 @@ onMounted(() => {
           <use xlink:href="#icon-icon_on_the_right"></use>
         </svg>
       </div>
-      <div class="tab-title">
+      <div class="tab-title" @click="addApiTable">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-tianjia"></use>
         </svg>
