@@ -8,8 +8,7 @@ import WorkbenchSendApi from './workbenchSendApi.vue'
 </script>
 <!-- 工作台主空间 -->
 <template>
-  <div v-if="apiTables.length === 0" id="workbench-space-default"><p>POSTMETER</p></div>
-  <div id="workbench-space" v-else>
+  <div id="workbench-space">
     <div class="tabs-style">
       <WorkbenchTabs />
     </div>
@@ -21,16 +20,6 @@ import WorkbenchSendApi from './workbenchSendApi.vue'
 </template>
 
 <style lang="scss" scoped>
-#workbench-space-default {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  color: var(--ev-c-text-color3);
-  font-weight: bold;
-}
 #workbench-space {
   width: 100%;
   height: 100%;

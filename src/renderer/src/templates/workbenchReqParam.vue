@@ -127,6 +127,14 @@ watch(
   overflow: auto; /* 超出部分显示滚动条 */
 }
 
+.param-list table tr {
+  height: 40px; // 每行固定高度
+}
+
+.param-list table td {
+  height: 40px;
+}
+
 /* 选项框 */
 .checkbox-cell {
   width: 40px;
@@ -139,8 +147,8 @@ watch(
   -webkit-appearance: none;
   -moz-appearance: none;
 
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   border: 1px solid var(--ev-c-text-color1);
   border-radius: 4px;
   background-color: transparent;
@@ -155,23 +163,23 @@ watch(
 .checkbox-style:checked::after {
   content: '';
   position: absolute;
-  left: 5px;
-  top: 2px;
+  left: 4px;
+  top: 1px;
   width: 5px;
-  height: 10px;
+  height: 8px;
   border: solid var(--en-c-subject-color1);
-  border-width: 0 2px 2px 0;
+  border-width: 0 1px 1px 0;
   transform: rotate(45deg);
 }
 
 /* 输入框样式 */
 .param-input {
   width: 100%;
-  height: 39px;
+  height: 100%;
   background: transparent;
   border: 1px solid transparent; /* 先留一个边框 */
   outline: none;
-  font-size: 18px;
+  font-size: 14px;
   // 正确的聚焦样式
   &:focus {
     border-color: #67c23a;

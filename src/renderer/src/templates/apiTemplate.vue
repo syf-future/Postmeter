@@ -5,7 +5,11 @@ import { ApiRequest, FolderRequest } from '@renderer/interfaces/request'
 import MenuTemplate from '@renderer/templates/menuTemplate.vue'
 import AddFolderDialog from '@renderer/templates/addDialogTemplate.vue'
 import { EnumMenuCode } from '@renderer/enums/enumMenuCode'
+import { EnumWorkSpaceCode } from '@renderer/enums/enumWorkCode'
 import { requestListStore } from '@renderer/stores/requestList'
+import { workSpaceStore } from '@renderer/stores/workSpaceStores'
+const { setWorkSpace } = workSpaceStore()
+
 const { addApi } = requestListStore()
 
 // 引入 responseStore
@@ -52,6 +56,7 @@ const onMenuItemClick = (enumMenuCode: EnumMenuCode) => {
     addApiTables(props.apiRequest)
     setNowApiTable(props.apiRequest)
     setNowResponse(props.apiRequest.apiId)
+    setWorkSpace(EnumWorkSpaceCode.WORK_SPACE_API) // 切换到API工作台
   }
   if (EnumMenuCode.COPY_API === enumMenuCode) {
     // 处理复制API的逻辑
@@ -81,6 +86,7 @@ function onClickApi(): void {
   addApiTables(props.apiRequest)
   setNowApiTable(props.apiRequest)
   setNowResponse(props.apiRequest.apiId)
+  setWorkSpace(EnumWorkSpaceCode.WORK_SPACE_API) // 切换到API工作台
 }
 </script>
 
