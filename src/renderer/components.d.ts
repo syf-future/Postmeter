@@ -29,6 +29,10 @@ declare module 'vue' {
     WorkbenchTabs: typeof import('./src/components/workbenchSpace/workbenchTabs.vue')['default']
     Workbox: typeof import('./src/components/workbox.vue')['default']
     Workflow: typeof import('./src/components/workflow.vue')['default']
+    WorkflowHttp: typeof import('./src/components/workflowSpace/workflowHttp.vue')['default']
+    WorkflowSleep: typeof import('./src/components/workflowSpace/workflowSleep.vue')['default']
     WorkflowSpace: typeof import('./src/components/workflowSpace/index.vue')['default']
+    WorkflowSql: typeof import('./src/components/workflowSpace/workflowSql.vue')['default']
+    WorkflowTabs: typeof import('./src/components/workflowSpace/workflowTabs.vue')['default']
   }
 }

@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import { apiTablesStore } from '@renderer/stores/apiTablesStores'
-const { apiTables } = storeToRefs(apiTablesStore())
 import WorkbenchTabs from './workbenchTabs.vue'
 import WorkbenchContent from './workbenchContent.vue'
 import WorkbenchSendApi from './workbenchSendApi.vue'
