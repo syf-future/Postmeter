@@ -1,20 +1,22 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const isStart = ref<boolean>(false)
+</script>
 
 <template>
   <div id="workflowTabs">
-    <div class="flowTabStyle">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-HTTP">˝</use>
+    <div class="flowTabStyle" @click="isStart = !isStart">
+      <svg class="icon" aria-hidden="true" v-show="isStart === false">
+        <use xlink:href="#icon-qidong">˝</use>
+      </svg>
+      <svg class="icon" aria-hidden="true" v-show="isStart === true">
+        <use xlink:href="#icon-tingzhi">˝</use>
       </svg>
     </div>
     <div class="flowTabStyle">
       <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-icon_SQL">˝</use>
-      </svg>
-    </div>
-    <div class="flowTabStyle">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-loading-v">˝</use>
+        <use xlink:href="#icon-chakan">˝</use>
       </svg>
     </div>
   </div>
@@ -36,6 +38,8 @@
     align-items: center;
     justify-content: center;
     margin-left: 10px;
+    background-color: var(--ev-c-background-color1);
+
     &:hover {
       background-color: var(--ev-c-background-color3);
       cursor: pointer;

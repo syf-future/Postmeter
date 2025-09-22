@@ -5,7 +5,13 @@ import { WorkFlow, WorkFlowHttp, WorkFlowSql } from "@renderer/interfaces/workFl
 
 // 定义响应列表的 Pinia store
 export const workFlowStore = defineStore("workFLowStore", () => {
-    const workFlowList = ref<WorkFlow[]>([]);
+    const workFlowList = ref<WorkFlow[]>([{
+        workFlowId: SequenceUtil.nextId(),
+        workFlowName: '新建工作流',
+        wordFlowThreadNum: 1,
+        wordFlowCycleNum: 1,
+        wordFlowWorkList: []
+    }]);
     const workFlow = ref<WorkFlow>();
     const workFlowType = ref<string>('');
 
@@ -40,7 +46,7 @@ export const workFlowStore = defineStore("workFLowStore", () => {
     function setWorkFlowType(type: string): void {
         workFlowType.value = type;
     }
-    
+
     function getWorkFLowByType(type: string): WorkFlowHttp | WorkFlowSql | undefined {
         // if (!workFlow.value) return undefined;
         // const workFlowItem = workFlow.value.wordFlowWorkList.find(item => item.workFlowType === type);
@@ -49,5 +55,5 @@ export const workFlowStore = defineStore("workFLowStore", () => {
         // }
         return undefined;
     }
-    return { workFlowList, workFlow, addWorkFlow, setNowWorkFlow ,setWorkFlowType};
+    return { workFlowList, workFlow, addWorkFlow, setNowWorkFlow, setWorkFlowType };
 })
