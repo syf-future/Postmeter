@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { SequenceUtil } from "@renderer/utils/SequenceUtil";
-import { WorkFlow, WorkFlowHttp, WorkFlowSql } from "@renderer/interfaces/workFlow";
+import { WorkFlow, WorkFlowHttp, WorkFlowSql, WorkFlowSleep } from "@renderer/interfaces/workFlow";
 
 // 定义响应列表的 Pinia store
 export const workFlowStore = defineStore("workFLowStore", () => {
@@ -10,6 +10,7 @@ export const workFlowStore = defineStore("workFLowStore", () => {
         workFlowName: '新建工作流',
         wordFlowThreadNum: 1,
         wordFlowCycleNum: 1,
+        wordFlowIntervalTime: 0,
         wordFlowWorkList: []
     }]);
     const workFlow = ref<WorkFlow>();
@@ -24,7 +25,6 @@ export const workFlowStore = defineStore("workFLowStore", () => {
             workFlowName: '新建工作流',
             wordFlowThreadNum: 1,
             wordFlowCycleNum: 1,
-            wordFlowWorkList: []
         }
         workFlowList.value.push(workFlow);
     }
@@ -47,13 +47,16 @@ export const workFlowStore = defineStore("workFLowStore", () => {
         workFlowType.value = type;
     }
 
-    function getWorkFLowByType(type: string): WorkFlowHttp | WorkFlowSql | undefined {
-        // if (!workFlow.value) return undefined;
-        // const workFlowItem = workFlow.value.wordFlowWorkList.find(item => item.workFlowType === type);
-        // if (workFlowItem) {
-        //     return workFlowItem as WorkFlowHttp | WorkFlowSql;
-        // }
-        return undefined;
+    /**
+     * 新增工作流子项
+     * @param workflowSub 工作流子项任务
+     */
+    function addWorkflowSub(workflowSub: WorkFlowHttp | WorkFlowSql | WorkFlowSleep) {
+        if (workFlow.value) {
+            const workflowList = workFlow.value.wordFlowWorkList || [];
+            workflowList.push(workflowSub);
+            workFlow.value.wordFlowWorkList = workflowList;
+        }
     }
-    return { workFlowList, workFlow, addWorkFlow, setNowWorkFlow, setWorkFlowType };
+    return { workFlowList, workFlow, workFlowType, addWorkFlow, setNowWorkFlow, setWorkFlowType, addWorkflowSub };
 })

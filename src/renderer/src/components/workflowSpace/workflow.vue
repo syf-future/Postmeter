@@ -1,9 +1,76 @@
 <script setup lang="ts">
+import { WorkFlow, WorkFlowHttp, WorkFlowSleep, WorkFlowSql } from '@renderer/interfaces/workFlow'
 import { ref } from 'vue'
+import { EnumWorkFlowCode } from '@renderer/enums/enumWorkCode'
+import { workFlowStore } from '@renderer/stores/workFlowStores'
+const { addWorkflowSub } = workFlowStore()
+// 定义工作流编辑组件
+const flowIcons = ref<Map<string, string>>(
+  new Map<string, string>()
+    .set(EnumWorkFlowCode.WORK_FLOW_HTTP, '#icon-HTTP')
+    .set(EnumWorkFlowCode.WORK_FLOW_SQL, '#icon-icon_SQL')
+    .set(EnumWorkFlowCode.WORK_FLOW_SLEEP, '#icon-loading-v')
+)
 
-const flowIcons = ref<string[]>(['#icon-HTTP', '#icon-icon_SQL', '#icon-loading-v'])
-
+// const flowIcons = ref<string[]>(['#icon-HTTP', '#icon-icon_SQL', '#icon-loading-v'])
+const getFlowIcons = (workflowType: string) => {
+  return flowIcons.value.get(workflowType)
+}
+// 是否编辑
 const isEdit = ref<boolean>(false)
+// 通过defineProps 宏函数来接收父组件传的数据
+const props = defineProps<{
+  workFlow?: WorkFlow
+}>()
+// 定义工作流名称、循环次数、线程数的响应式变量
+const workflowName = ref<string>(props.workFlow?.workFlowName || '')
+const wordFlowCycleNum = ref<number>(props.workFlow?.wordFlowCycleNum || 1)
+const wordFlowThreadNum = ref<number>(props.workFlow?.wordFlowThreadNum || 1)
+const wordFlowIntervalTime = ref<number>(props.workFlow?.wordFlowIntervalTime || 0)
+
+function addWorkflowSub1(addType: string): void {
+  let workflowSub: WorkFlowHttp | WorkFlowSql | WorkFlowSleep
+  switch (addType) {
+    case EnumWorkFlowCode.WORK_FLOW_HTTP:
+      console.log('添加http')
+      workflowSub = {
+        type: EnumWorkFlowCode.WORK_FLOW_HTTP,
+        name: '发送http请求',
+        httpMethod: '',
+        httpUrl: '',
+        httpParam: new Map<string, string>(),
+        httpHeader: new Map<string, string>(),
+        httpBody: '',
+        httpResp: '',
+        httpRespSleep: 0,
+        httpRespNum: 1
+      }
+      break
+    case EnumWorkFlowCode.WORK_FLOW_SQL:
+      console.log('添加sql')
+      workflowSub = {
+        type: EnumWorkFlowCode.WORK_FLOW_SQL,
+        name: '查询sql',
+        sqlDate: 'select * from credit_apply',
+        sqlResp: '',
+        sqlNum: 1,
+        sqlSleep: 0
+      }
+      break
+    case EnumWorkFlowCode.WORK_FLOW_SLEEP:
+      console.log('添加sleep')
+      workflowSub = {
+        type: EnumWorkFlowCode.WORK_FLOW_SLEEP,
+        name: '等待',
+        sleepTime: 1000
+      }
+      break
+    default:
+      console.log('未知类型:', addType)
+      return
+  }
+  addWorkflowSub(workflowSub)
+}
 </script>
 
 <template>
@@ -16,7 +83,7 @@ const isEdit = ref<boolean>(false)
         <div class="item">
           <label class="field-label" for="workflowName">名称</label>
           <div class="control">
-            <input id="workflowName" type="text" placeholder="请输入名称" />
+            <input id="workflowName" type="text" placeholder="请输入名称" v-model="workflowName" />
           </div>
         </div>
 
@@ -34,14 +101,14 @@ const isEdit = ref<boolean>(false)
         <div class="item">
           <label class="field-label">线程数</label>
           <div class="control">
-            <input type="number" min="1" placeholder="线程数" />
+            <input type="number" min="1" placeholder="线程数" v-model="wordFlowThreadNum" />
           </div>
         </div>
 
         <div class="item">
           <label class="field-label">循环次数</label>
           <div class="control">
-            <input type="number" min="0" placeholder="循环次数" />
+            <input type="number" min="0" placeholder="循环次数" v-model="wordFlowCycleNum" />
           </div>
         </div>
       </div>
@@ -51,7 +118,7 @@ const isEdit = ref<boolean>(false)
         <div class="item">
           <label class="field-label">间隔时间</label>
           <div class="control">
-            <input type="text" placeholder="ms" />
+            <input type="text" placeholder="ms" v-model="wordFlowIntervalTime" />
           </div>
         </div>
 
@@ -66,12 +133,12 @@ const isEdit = ref<boolean>(false)
           <div style="width: 100%; height: 100%; display: flex">
             <div
               class="flowTabStyle"
-              v-for="(flowIcon, index) in flowIcons"
+              v-for="([key, value], index) in Array.from(flowIcons.entries())"
               :key="index"
               v-show="isEdit === true"
             >
-              <svg class="icon" aria-hidden="true">
-                <use :xlink:href="flowIcon"></use>
+              <svg class="icon" aria-hidden="true" @click="addWorkflowSub1(key)">
+                <use :xlink:href="value"></use>
               </svg>
             </div>
           </div>
@@ -85,11 +152,15 @@ const isEdit = ref<boolean>(false)
         </div>
       </div>
       <div class="subStyle">
-        <div class="subFlowStyle">
+        <div
+          class="subFlowStyle"
+          v-for="(item, idx) in props.workFlow?.wordFlowWorkList"
+          :key="idx"
+        >
           <svg class="icon" aria-hidden="true" style="margin-left: 10px">
-            <use xlink:href="#icon-HTTP"></use>
+            <use :xlink:href="getFlowIcons(item.type)"></use>
           </svg>
-          <span style="margin-left: 10px"> 授信申请 </span>
+          <span style="margin-left: 10px"> {{ item.name }} </span>
         </div>
       </div>
     </div>

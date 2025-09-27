@@ -5,9 +5,9 @@ import { WorkFlow } from '@renderer/interfaces/workFlow'
 import { EnumWorkSpaceCode } from '@renderer/enums/enumWorkCode'
 import { EnumWorkFlowCode } from '@renderer/enums/enumWorkCode'
 import { workSpaceStore } from '@renderer/stores/workSpaceStores'
-const { setWorkSpace, setWorkSpaceName } = workSpaceStore()
+const { setWorkSpace } = workSpaceStore()
 import { workFlowStore } from '@renderer/stores/workFlowStores'
-const { setNowWorkFlow } = workFlowStore()
+const { setNowWorkFlow, setWorkFlowType } = workFlowStore()
 // 每个组件实例都会有自己的 isFolderOpen 状态
 const isFolderOpen = ref(false)
 
@@ -19,7 +19,7 @@ const props = defineProps<{
 function clickFlowFolder(): void {
   setNowWorkFlow(props.workFlow.workFlowId)
   setWorkSpace(EnumWorkSpaceCode.WORK_SPACE_WORKFLOW)
-  setWorkSpaceName(EnumWorkFlowCode.WORK_FLOW)
+  setWorkFlowType(EnumWorkFlowCode.WORK_FLOW)
 }
 </script>
 

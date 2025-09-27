@@ -4,13 +4,11 @@ import Workflow from './workflow.vue'
 import WorkflowHttp from './workflowHttp.vue'
 import WorkflowSql from './workflowSql.vue'
 import WorkflowSleep from './workflowSleep.vue'
-import { WorkFlow } from '@renderer/interfaces/workFlow'
 import { EnumWorkFlowCode } from '@renderer/enums/enumWorkCode'
-import { workSpaceStore } from '@renderer/stores/workSpaceStores'
 import { workFlowStore } from '@renderer/stores/workFlowStores'
 import { storeToRefs } from 'pinia'
-const { workFlowName } = storeToRefs(workSpaceStore())
-const { workFlow } = storeToRefs(workFlowStore())
+// 获取点击的工作流名称
+const { workFlow, workFlowType } = storeToRefs(workFlowStore())
 </script>
 
 <!-- 工作台主空间 -->
@@ -20,10 +18,10 @@ const { workFlow } = storeToRefs(workFlowStore())
       <WorkflowTabs />
     </div>
     <div class="content-style">
-      <Workflow v-show="workFlowName === EnumWorkFlowCode.WORK_FLOW" />
-      <WorkflowHttp v-show="workFlowName === EnumWorkFlowCode.WORK_FLOW_HTTP" />
-      <WorkflowSql v-show="workFlowName === EnumWorkFlowCode.WORK_FLOW_SQL" />
-      <WorkflowSleep v-show="workFlowName === EnumWorkFlowCode.WORK_FLOW_SLEEP" />
+      <Workflow v-show="workFlowType === EnumWorkFlowCode.WORK_FLOW" :workFlow="workFlow" />
+      <WorkflowHttp v-show="workFlowType === EnumWorkFlowCode.WORK_FLOW_HTTP" />
+      <WorkflowSql v-show="workFlowType === EnumWorkFlowCode.WORK_FLOW_SQL" />
+      <WorkflowSleep v-show="workFlowType === EnumWorkFlowCode.WORK_FLOW_SLEEP" />
     </div>
   </div>
 </template>
