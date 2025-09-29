@@ -3,7 +3,7 @@ import { WorkFlow, WorkFlowHttp, WorkFlowSleep, WorkFlowSql } from '@renderer/in
 import { ref } from 'vue'
 import { EnumWorkFlowCode } from '@renderer/enums/enumWorkCode'
 import { workFlowStore } from '@renderer/stores/workFlowStores'
-const { addWorkflowSub } = workFlowStore()
+const { addWorkflowSub, setWorkFlowType, setWorkFLowSub } = workFlowStore()
 // 定义工作流编辑组件
 const flowIcons = ref<Map<string, string>>(
   new Map<string, string>()
@@ -28,6 +28,7 @@ const wordFlowCycleNum = ref<number>(props.workFlow?.wordFlowCycleNum || 1)
 const wordFlowThreadNum = ref<number>(props.workFlow?.wordFlowThreadNum || 1)
 const wordFlowIntervalTime = ref<number>(props.workFlow?.wordFlowIntervalTime || 0)
 
+// 增加工作流子项
 function addWorkflowSub1(addType: string): void {
   let workflowSub: WorkFlowHttp | WorkFlowSql | WorkFlowSleep
   switch (addType) {
@@ -36,6 +37,7 @@ function addWorkflowSub1(addType: string): void {
       workflowSub = {
         type: EnumWorkFlowCode.WORK_FLOW_HTTP,
         name: '发送http请求',
+        isUse: true,
         httpMethod: '',
         httpUrl: '',
         httpParam: new Map<string, string>(),
@@ -51,6 +53,7 @@ function addWorkflowSub1(addType: string): void {
       workflowSub = {
         type: EnumWorkFlowCode.WORK_FLOW_SQL,
         name: '查询sql',
+        isUse: true,
         sqlDate: 'select * from credit_apply',
         sqlResp: '',
         sqlNum: 1,
@@ -62,6 +65,7 @@ function addWorkflowSub1(addType: string): void {
       workflowSub = {
         type: EnumWorkFlowCode.WORK_FLOW_SLEEP,
         name: '等待',
+        isUse: true,
         sleepTime: 1000
       }
       break
@@ -71,6 +75,11 @@ function addWorkflowSub1(addType: string): void {
   }
   addWorkflowSub(workflowSub)
 }
+
+function clickWorkFlowSub(item: WorkFlowHttp | WorkFlowSql | WorkFlowSleep): void {
+  setWorkFLowSub(item)
+  setWorkFlowType(item.type)
+}
 </script>
 
 <template>
@@ -78,7 +87,7 @@ function addWorkflowSub1(addType: string): void {
     <div class="workflowInfoStyle">
       <p class="title">工作流</p>
 
-      <!-- 名称 + 是否启用 -->
+      <!-- 名称 + 线程数 -->
       <div class="row">
         <div class="item">
           <label class="field-label" for="workflowName">名称</label>
@@ -88,10 +97,9 @@ function addWorkflowSub1(addType: string): void {
         </div>
 
         <div class="item">
-          <span class="field-label">是否启用</span>
-          <div class="control radios">
-            <label><input type="radio" name="enabled" value="yes" checked /> 是</label>
-            <label><input type="radio" name="enabled" value="no" /> 否</label>
+          <label class="field-label">线程数</label>
+          <div class="control">
+            <input type="number" min="1" placeholder="线程数" v-model="wordFlowThreadNum" />
           </div>
         </div>
       </div>
@@ -99,30 +107,18 @@ function addWorkflowSub1(addType: string): void {
       <!-- 线程数 + 循环次数 -->
       <div class="row">
         <div class="item">
-          <label class="field-label">线程数</label>
-          <div class="control">
-            <input type="number" min="1" placeholder="线程数" v-model="wordFlowThreadNum" />
-          </div>
-        </div>
-
-        <div class="item">
           <label class="field-label">循环次数</label>
           <div class="control">
             <input type="number" min="0" placeholder="循环次数" v-model="wordFlowCycleNum" />
           </div>
         </div>
-      </div>
 
-      <!-- 间隔时间 + 循环次数 -->
-      <div class="row">
         <div class="item">
           <label class="field-label">间隔时间</label>
           <div class="control">
             <input type="text" placeholder="ms" v-model="wordFlowIntervalTime" />
           </div>
         </div>
-
-        <div class="item"></div>
       </div>
     </div>
 
@@ -146,7 +142,7 @@ function addWorkflowSub1(addType: string): void {
           <div style="margin-right: 10px">
             <div class="flowTabStyle2" @click="isEdit = !isEdit">
               <p v-show="isEdit === false">编辑</p>
-              <P v-show="isEdit === true">保存</P>
+              <p v-show="isEdit === true">保存</p>
             </div>
           </div>
         </div>
@@ -156,8 +152,13 @@ function addWorkflowSub1(addType: string): void {
           class="subFlowStyle"
           v-for="(item, idx) in props.workFlow?.wordFlowWorkList"
           :key="idx"
+          @click="clickWorkFlowSub(item)"
         >
-          <svg class="icon" aria-hidden="true" style="margin-left: 10px">
+          <div
+            style="width: 5px; height: 5px; border-radius: 50%; margin-left: 5px"
+            :style="{ backgroundColor: item.isUse ? 'var(--en-c-subject-color1)' : 'yellow' }"
+          ></div>
+          <svg class="icon" aria-hidden="true" style="margin-left: 5px">
             <use :xlink:href="getFlowIcons(item.type)"></use>
           </svg>
           <span style="margin-left: 10px"> {{ item.name }} </span>
@@ -273,7 +274,6 @@ function addWorkflowSub1(addType: string): void {
     .subFlowStyle {
       display: flex;
       align-items: center;
-      // justify-content: center;
       width: 100%;
       height: 35px;
       &:hover {

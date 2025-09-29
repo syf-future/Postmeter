@@ -14,6 +14,7 @@ export const workFlowStore = defineStore("workFLowStore", () => {
         wordFlowWorkList: []
     }]);
     const workFlow = ref<WorkFlow>();
+    const workFlowSub = ref<WorkFlowHttp | WorkFlowSql | WorkFlowSleep>();
     const workFlowType = ref<string>('');
 
     /**
@@ -58,5 +59,16 @@ export const workFlowStore = defineStore("workFLowStore", () => {
             workFlow.value.wordFlowWorkList = workflowList;
         }
     }
-    return { workFlowList, workFlow, workFlowType, addWorkFlow, setNowWorkFlow, setWorkFlowType, addWorkflowSub };
+
+    /**
+     * 设置当前工作流子项
+     * @param workflowSub 工作流子项
+     */
+    function setWorkFLowSub(workflowSub: WorkFlowHttp | WorkFlowSql | WorkFlowSleep) {
+        workFlowSub.value = workflowSub;
+    }
+    return {
+        workFlowList, workFlow, workFlowType, workFlowSub,
+        addWorkFlow, setNowWorkFlow, setWorkFlowType, addWorkflowSub, setWorkFLowSub
+    };
 })

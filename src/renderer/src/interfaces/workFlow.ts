@@ -15,6 +15,7 @@ export interface WorkFlow {
 export interface WorkFlowHttp {
     type: EnumWorkFlowCode.WORK_FLOW_HTTP, // 工作流类型 
     name: string // 请求名称,
+    isUse: boolean, // 是否启用
     httpMethod: string, // 请求方法，如 GET、POST 等
     httpUrl: string, // 请求地址
     httpParam: Map<string, string>, // 请求参数(get请求时传输的传输)
@@ -29,6 +30,7 @@ export interface WorkFlowHttp {
 export interface WorkFlowSql {
     type: EnumWorkFlowCode.WORK_FLOW_SQL, // 工作流类型 
     name: string, // 请求名称,
+    isUse: boolean, // 是否启用
     sqlDate: string, // sql内容
     sqlResp: string, // 期待的响应   
     sqlNum: number,
@@ -38,5 +40,6 @@ export interface WorkFlowSql {
 export interface WorkFlowSleep {
     type: EnumWorkFlowCode.WORK_FLOW_SLEEP, // 工作流类型 
     name: string, // 请求名称,
+    isUse: boolean, // 是否启用
     sleepTime: number    // 等待时间，单位毫秒
 }
