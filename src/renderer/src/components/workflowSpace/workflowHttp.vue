@@ -1,19 +1,24 @@
 <script setup lang="ts">
-import { WorkFlow, WorkFlowHttp, WorkFlowSleep, WorkFlowSql } from '@renderer/interfaces/workFlow'
+import { WorkFlowHttp } from '@renderer/interfaces/workFlow'
 import { ref } from 'vue'
-import { EnumWorkFlowCode } from '@renderer/enums/enumWorkCode'
-import { workFlowStore } from '@renderer/stores/workFlowStores'
-
+import WorkflowHttpBody from '@renderer/templates/workFlowTemplate/workflowHttpBody.vue'
+import WorkflowHttpHeader from '@renderer/templates/workFlowTemplate/workflowHttpHeader.vue'
+import WorkflowHttpParam from '@renderer/templates/workFlowTemplate/workflowHttpParam.vue'
+import WorkflowHttpResp from '@renderer/templates/workFlowTemplate/workflowHttpResp.vue'
 // 通过defineProps 宏函数来接收父组件传的数据
 const props = defineProps<{
   workFlowHttp?: WorkFlowHttp
   workFlowId?: string
 }>()
 // 定义工作流名称、循环次数、线程数的响应式变量
-const workflowName = ref<string>(props.workFlowHttp?.name || '')
-const wordFlowCycleNum = ref<number>(0)
-const wordFlowThreadNum = ref<number>(0)
-const wordFlowIntervalTime = ref<number>(0)
+const httpName = ref<string>(props.workFlowHttp?.name || '')
+const hettpIsUse = ref<boolean>(props.workFlowHttp?.isUse || false)
+const httpMettod = ref<string>(props.workFlowHttp?.httpMethod || 'GET')
+const httpUrl = ref<string>(props.workFlowHttp?.httpUrl || '')
+const httpCount = ref<number>(props.workFlowHttp?.httpRespNum || 1)
+const hettpSleep = ref<number>(props.workFlowHttp?.httpRespSleep || 0)
+
+const labelRef = ref<string>('1')
 </script>
 
 <template>
@@ -26,15 +31,18 @@ const wordFlowIntervalTime = ref<number>(0)
         <div class="item">
           <label class="field-label" for="workflowName">名称</label>
           <div class="control">
-            <input id="workflowName" type="text" placeholder="请输入名称" v-model="workflowName" />
+            <input id="workflowName" type="text" placeholder="请输入名称" v-model="httpName" />
           </div>
         </div>
 
         <div class="item">
           <span class="field-label">是否启用</span>
           <div class="control radios">
-            <label><input type="radio" name="enabled" value="yes" checked /> 是</label>
-            <label><input type="radio" name="enabled" value="no" /> 否</label>
+            <label
+              ><input type="radio" name="enabled" value="yes" checked v-model="hettpIsUse" />
+              是</label
+            >
+            <label><input type="radio" name="enabled" value="no" v-model="hettpIsUse" /> 否</label>
           </div>
         </div>
       </div>
@@ -44,7 +52,7 @@ const wordFlowIntervalTime = ref<number>(0)
         <div class="item">
           <label class="field-label">请求类型</label>
           <div class="control">
-            <input type="text" placeholder="类型" v-model="wordFlowIntervalTime" />
+            <input type="text" placeholder="类型" v-model="httpMettod" />
           </div>
         </div>
 
@@ -55,7 +63,7 @@ const wordFlowIntervalTime = ref<number>(0)
         <div class="item">
           <label class="field-label">请求URL</label>
           <div class="control">
-            <input type="text" placeholder="url" v-model="wordFlowIntervalTime" />
+            <input type="text" placeholder="url" v-model="httpUrl" />
           </div>
         </div>
       </div>
@@ -64,16 +72,47 @@ const wordFlowIntervalTime = ref<number>(0)
         <div class="item">
           <label class="field-label">请求次数</label>
           <div class="control">
-            <input type="number" min="1" placeholder="线程数" v-model="wordFlowThreadNum" />
+            <input type="number" min="1" placeholder="请求次数" v-model="httpCount" />
           </div>
         </div>
 
         <div class="item">
           <label class="field-label">请求间隔</label>
           <div class="control">
-            <input type="text" placeholder="间隔时间ms" v-model="wordFlowCycleNum" />
+            <input type="text" placeholder="间隔时间ms" v-model="hettpSleep" />
           </div>
         </div>
+      </div>
+    </div>
+    <div style="height: 60%; width: 100%">
+      <div class="request-label-style">
+        <div class="label-test-style" @click="labelRef = '1'" :class="{ active: labelRef === '1' }">
+          <span>参数</span>
+          <span
+            class="text-count"
+            v-if="props.workFlowHttp && props.workFlowHttp.httpParam.size > 0"
+            >({{ props.workFlowHttp ? props.workFlowHttp.httpParam.size : 0 }})</span
+          >
+        </div>
+        <div class="label-test-style" @click="labelRef = '2'" :class="{ active: labelRef === '2' }">
+          <span>请求头</span>
+          <span class="text-count"
+            >({{ props.workFlowHttp ? props.workFlowHttp.httpHeader.size : 0 }})</span
+          >
+        </div>
+        <div class="label-test-style" @click="labelRef = '3'" :class="{ active: labelRef === '3' }">
+          <span>请求体</span>
+        </div>
+        <div class="label-test-style" @click="labelRef = '4'" :class="{ active: labelRef === '4' }">
+          <span>响应设置</span>
+        </div>
+      </div>
+      <div style="flex: 1">
+        <!-- 根据选中的标签 显示对应的组件 -->
+        <WorkflowHttpParam v-show="labelRef === '1'" />
+        <WorkflowHttpHeader v-show="labelRef === '2'" />
+        <WorkflowHttpBody v-show="labelRef === '3'" />
+        <WorkflowHttpResp v-show="labelRef === '4'" />
       </div>
     </div>
   </div>
@@ -89,21 +128,21 @@ const wordFlowIntervalTime = ref<number>(0)
 .workflowInfoStyle {
   --label-width: 90px; /* 改成你需要的宽度，比如 80px / 100px */
   width: 100%;
-  height: 35%;
+  height: 40%;
   border-bottom: 1px solid var(--ev-c-border-color1);
-  padding: 10px 20px;
+  padding: 8px 20px;
   overflow: auto;
 
   .title {
     font-size: 24px;
     font-weight: 800;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
   }
 
   .row {
     display: flex;
     gap: 20px; /* 两列间距 */
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .item {
@@ -155,6 +194,38 @@ const wordFlowIntervalTime = ref<number>(0)
   .control input:focus {
     outline: 1px solid var(--en-c-subject-color2);
     border-color: var(--en-c-subject-color2);
+  }
+}
+
+// http请求部分样式
+.request-label-style {
+  width: 100%;
+  height: 40px;
+  display: flex;
+
+  .label-test-style {
+    height: 100%;
+    margin: 0 10px;
+    cursor: pointer;
+    display: flex; /* 开启 flex 布局 */
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    padding: 2px; /* 内边距上下左右 3px */
+    color: var(--ev-c-text-color1);
+    white-space: nowrap; /* 不换行 */
+    overflow: hidden; /*超出隐藏 */
+    flex-shrink: 0; /* 不压缩 */
+
+    &:hover {
+      background-color: var(--ev-c-background-color3);
+    }
+  }
+  .label-test-style.active {
+    border-bottom: 2px solid #46ff40; // 选中时底部高亮
+    color: var(--ev-c-text-color2);
+  }
+  .text-count {
+    color: var(--en-c-subject-color1);
   }
 }
 </style>
