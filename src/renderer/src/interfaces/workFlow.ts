@@ -1,4 +1,5 @@
 import { EnumWorkFlowCode } from "@renderer/enums/enumWorkCode";
+import { ReqRow, WorkFlowHttpResp } from "./reqRow";
 
 // 定义类型
 export interface WorkFlow {
@@ -18,10 +19,10 @@ export interface WorkFlowHttp {
     isUse: boolean, // 是否启用
     httpMethod: string, // 请求方法，如 GET、POST 等
     httpUrl: string, // 请求地址
-    httpParam: Map<string, string>, // 请求参数(get请求时传输的传输)
-    httpHeader: Map<string, string>,
+    httpParam: ReqRow[], // 请求参数(get请求时传输的传输)
+    httpHeader: ReqRow[],
     httpBody: string
-    httpResp: string,       // 期待的响应。若返回不匹配则请求失败
+    httpResp: WorkFlowHttpResp[],       // 期待的响应。若返回不匹配则请求失败
     httpRespNum: number,     // 请求次数
     httpRespSleep: number    // 请求间隔时间
 }

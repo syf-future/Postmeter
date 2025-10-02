@@ -1,12 +1,11 @@
 /** 参数列表模板 */
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref } from 'vue'
 import { ReqRow } from '@renderer/interfaces/reqRow'
-import { ApiRequest } from '@renderer/interfaces/request'
-import { apiTablesStore } from '@renderer/stores/apiTablesStores'
-const { setUpdateApiTable } = apiTablesStore()
+import { WorkFlowHttp } from '@renderer/interfaces/workFlow'
 const props = defineProps<{
-  apiRequest?: ApiRequest
+  workFlowHttp?: WorkFlowHttp
+  workFlowId?: string
 }>()
 
 // 请求参数
@@ -15,30 +14,18 @@ const rows = ref<ReqRow[]>([])
 // 删除行
 const removeRow = (index: number) => {
   rows.value.splice(index, 1)
-  if (props.apiRequest) {
-    props.apiRequest.param = rows.value
-    setUpdateApiTable(props.apiRequest)
+  if (props.workFlowHttp) {
+    props.workFlowHttp.httpParam = rows.value
   }
 }
 
 // 新增行
 const addRow = () => {
   rows.value.push({ checked: false, key: '', value: '' })
-  if (props.apiRequest) {
-    props.apiRequest.param = rows.value
-    setUpdateApiTable(props.apiRequest)
+  if (props.workFlowHttp) {
+    props.workFlowHttp.httpParam = rows.value
   }
 }
-onMounted(() => {
-  rows.value = [...(props.apiRequest ? props.apiRequest.param : [])] // 浅拷贝一份
-})
-// 深度监听
-watch(
-  () => props.apiRequest,
-  (newApiRequest) => {
-    rows.value = [...(newApiRequest ? newApiRequest.param : [])]
-  }
-)
 </script>
 
 <template>
@@ -121,7 +108,7 @@ watch(
 
 .param-list {
   width: calc(100% - 20px);
-  height: calc(100% - 100px);
+  height: calc(100% - 10px);
   margin-left: 10px;
   margin-top: 5px;
   overflow: auto; /* 超出部分显示滚动条 */
@@ -179,7 +166,7 @@ watch(
   background: transparent;
   border: 1px solid transparent; /* 先留一个边框 */
   outline: none;
-  font-size: 14px;
+  font-size: 18px;
   // 正确的聚焦样式
   &:focus {
     border-color: #67c23a;

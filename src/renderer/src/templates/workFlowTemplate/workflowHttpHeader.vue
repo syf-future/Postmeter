@@ -1,12 +1,11 @@
 /** 请求头列表模板 */
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref } from 'vue'
 import { ReqRow } from '@renderer/interfaces/reqRow'
-import { ApiRequest } from '@renderer/interfaces/request'
-import { apiTablesStore } from '@renderer/stores/apiTablesStores'
-const { setUpdateApiTable } = apiTablesStore()
+import { WorkFlowHttp } from '@renderer/interfaces/workFlow'
 const props = defineProps<{
-  apiRequest?: ApiRequest
+  workFlowHttp?: WorkFlowHttp
+  workFlowId?: string
 }>()
 
 // 请求头
@@ -14,33 +13,19 @@ const rows = ref<ReqRow[]>([])
 
 // 删除行
 const removeRow = (index: number) => {
-  if (props.apiRequest) {
+  if (props.workFlowHttp) {
     rows.value.splice(index, 1)
-    props.apiRequest.headers = rows.value
-    setUpdateApiTable(props.apiRequest)
+    props.workFlowHttp.httpHeader = rows.value
   }
 }
 
 // 新增行
 const addRow = () => {
-  if (props.apiRequest) {
+  if (props.workFlowHttp) {
     rows.value.push({ checked: false, key: '', value: '' })
-    props.apiRequest.headers = rows.value
-    setUpdateApiTable(props.apiRequest)
+    props.workFlowHttp.httpHeader = rows.value
   }
 }
-onMounted(() => {
-  rows.value = [...(props.apiRequest ? props.apiRequest.headers : [])] // 浅拷贝一份
-})
-// 深度监听
-watch(
-  () => props.apiRequest,
-  (newApiRequest) => {
-    if (newApiRequest) {
-      rows.value = [...newApiRequest.headers] // 浅拷贝一份
-    }
-  }
-)
 </script>
 
 <template>
@@ -123,7 +108,7 @@ watch(
 
 .param-list {
   width: calc(100% - 20px);
-  height: calc(100% - 100px);
+  height: calc(100% - 10px);
   margin-left: 10px;
   margin-top: 5px;
   overflow: auto; /* 超出部分显示滚动条 */

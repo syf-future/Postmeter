@@ -90,14 +90,14 @@ const labelRef = ref<string>('1')
           <span>参数</span>
           <span
             class="text-count"
-            v-if="props.workFlowHttp && props.workFlowHttp.httpParam.size > 0"
-            >({{ props.workFlowHttp ? props.workFlowHttp.httpParam.size : 0 }})</span
+            v-if="props.workFlowHttp && props.workFlowHttp.httpParam.length > 0"
+            >({{ props.workFlowHttp ? props.workFlowHttp.httpParam.length : 0 }})</span
           >
         </div>
         <div class="label-test-style" @click="labelRef = '2'" :class="{ active: labelRef === '2' }">
           <span>请求头</span>
           <span class="text-count"
-            >({{ props.workFlowHttp ? props.workFlowHttp.httpHeader.size : 0 }})</span
+            >({{ props.workFlowHttp ? props.workFlowHttp.httpHeader.length : 0 }})</span
           >
         </div>
         <div class="label-test-style" @click="labelRef = '3'" :class="{ active: labelRef === '3' }">
@@ -107,13 +107,27 @@ const labelRef = ref<string>('1')
           <span>响应设置</span>
         </div>
       </div>
-      <div style="flex: 1">
-        <!-- 根据选中的标签 显示对应的组件 -->
-        <WorkflowHttpParam v-show="labelRef === '1'" />
-        <WorkflowHttpHeader v-show="labelRef === '2'" />
-        <WorkflowHttpBody v-show="labelRef === '3'" />
-        <WorkflowHttpResp v-show="labelRef === '4'" />
-      </div>
+      <!-- 根据选中的标签 显示对应的组件 -->
+      <WorkflowHttpParam
+        v-show="labelRef === '1'"
+        :workFlowHttp="props.workFlowHttp"
+        :workFlowId="props.workFlowId"
+      />
+      <WorkflowHttpHeader
+        v-show="labelRef === '2'"
+        :workFlowHttp="props.workFlowHttp"
+        :workFlowId="props.workFlowId"
+      />
+      <WorkflowHttpBody
+        v-show="labelRef === '3'"
+        :workFlowHttp="props.workFlowHttp"
+        :workFlowId="props.workFlowId"
+      />
+      <WorkflowHttpResp
+        v-show="labelRef === '4'"
+        :workFlowHttp="props.workFlowHttp"
+        :workFlowId="props.workFlowId"
+      />
     </div>
   </div>
 </template>
