@@ -12,7 +12,6 @@ const flowIcons = ref<Map<string, string>>(
     .set(EnumWorkFlowCode.WORK_FLOW_SLEEP, '#icon-loading-v')
 )
 
-// const flowIcons = ref<string[]>(['#icon-HTTP', '#icon-icon_SQL', '#icon-loading-v'])
 const getFlowIcons = (workflowType: string) => {
   return flowIcons.value.get(workflowType)
 }
@@ -40,10 +39,10 @@ function addWorkflowSub1(addType: string): void {
         isUse: true,
         httpMethod: '',
         httpUrl: '',
-        httpParam: new Map<string, string>(),
-        httpHeader: new Map<string, string>(),
+        httpParam: [],
+        httpHeader: [],
         httpBody: '',
-        httpResp: '',
+        httpResp: [],
         httpRespSleep: 0,
         httpRespNum: 1
       }
@@ -154,14 +153,36 @@ function clickWorkFlowSub(item: WorkFlowHttp | WorkFlowSql | WorkFlowSleep): voi
           :key="idx"
           @click="clickWorkFlowSub(item)"
         >
+          <div style="display: flex; align-items: center">
+            <div
+              style="width: 5px; height: 5px; border-radius: 50%; margin-left: 5px"
+              :style="{ backgroundColor: item.isUse ? 'var(--en-c-subject-color1)' : 'yellow' }"
+            ></div>
+            <svg class="icon" aria-hidden="true" style="margin-left: 5px">
+              <use :xlink:href="getFlowIcons(item.type)"></use>
+            </svg>
+            <span style="margin-left: 10px"> {{ item.name }} </span>
+          </div>
           <div
-            style="width: 5px; height: 5px; border-radius: 50%; margin-left: 5px"
-            :style="{ backgroundColor: item.isUse ? 'var(--en-c-subject-color1)' : 'yellow' }"
-          ></div>
-          <svg class="icon" aria-hidden="true" style="margin-left: 5px">
-            <use :xlink:href="getFlowIcons(item.type)"></use>
-          </svg>
-          <span style="margin-left: 10px"> {{ item.name }} </span>
+            style="display: flex; align-items: center; margin-right: 10px"
+            v-show="isEdit === true"
+          >
+            <div class="flowSubEditStyle">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shangyi"></use>
+              </svg>
+            </div>
+            <div class="flowSubEditStyle">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-xiayi"></use>
+              </svg>
+            </div>
+            <div class="flowSubEditStyle">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shanchu"></use>
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -274,10 +295,11 @@ function clickWorkFlowSub(item: WorkFlowHttp | WorkFlowSql | WorkFlowSleep): voi
     .subFlowStyle {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       width: 100%;
       height: 35px;
       &:hover {
-        background-color: var(--ev-c-background-color3);
+        background-color: var(--ev-c-background-color2);
         cursor: pointer;
       }
     }
@@ -325,6 +347,21 @@ function clickWorkFlowSub(item: WorkFlowHttp | WorkFlowSql | WorkFlowSleep): voi
   }
   &:active {
     background-color: var(--ev-c-background-color1);
+  }
+}
+
+.flowSubEditStyle {
+  width: 23px;
+  height: 23px;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15%;
+
+  &:hover {
+    background-color: var(--ev-c-background-color3);
+    cursor: pointer;
   }
 }
 </style>

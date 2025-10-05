@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { EnumWorkFlowCode } from '@renderer/enums/enumWorkCode'
+import { workFlowStore } from '@renderer/stores/workFlowStores'
+const { setWorkFlowType } = workFlowStore()
 import { ref } from 'vue'
 
 const isStart = ref<boolean>(false)
@@ -17,6 +20,11 @@ const isStart = ref<boolean>(false)
     <div class="flowTabStyle">
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-chakan">˝</use>
+      </svg>
+    </div>
+    <div class="flowTabStyle" @click="setWorkFlowType(EnumWorkFlowCode.WORK_FLOW_CONNECT_SQL)">
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-icon_shujuku">˝</use>
       </svg>
     </div>
   </div>

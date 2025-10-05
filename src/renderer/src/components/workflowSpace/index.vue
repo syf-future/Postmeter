@@ -8,6 +8,7 @@ import { EnumWorkFlowCode } from '@renderer/enums/enumWorkCode'
 import { workFlowStore } from '@renderer/stores/workFlowStores'
 import { storeToRefs } from 'pinia'
 import { WorkFlowHttp, WorkFlowSleep, WorkFlowSql } from '@renderer/interfaces/workFlow'
+import WorkflowConnectSql from './workflowConnectSql.vue'
 // 获取点击的工作流名称
 const { workFlow, workFlowType, workFlowSub } = storeToRefs(workFlowStore())
 
@@ -57,6 +58,7 @@ function getWorkFlowSleep(): WorkFlowSleep | undefined {
         :workFlowId="workFlow?.workFlowId"
         :workFlowSleep="getWorkFlowSleep()"
       />
+      <WorkflowConnectSql v-if="workFlowType === EnumWorkFlowCode.WORK_FLOW_CONNECT_SQL" />
     </div>
   </div>
 </template>
@@ -65,6 +67,8 @@ function getWorkFlowSleep(): WorkFlowSleep | undefined {
 #workflow-space {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column; /* 垂直排列 */
 }
 
 .tabs-style {
@@ -73,7 +77,6 @@ function getWorkFlowSleep(): WorkFlowSleep | undefined {
 }
 
 .content-style {
-  width: 100%;
-  height: calc(100% - 120px);
+  flex: 1;
 }
 </style>
