@@ -84,7 +84,7 @@ const labelRef = ref<string>('1')
         </div>
       </div>
     </div>
-    <div style="height: 60%; width: 100%">
+    <div style="height: 60%; width: 100%; overflow: hidden">
       <div class="request-label-style">
         <div class="label-test-style" @click="labelRef = '1'" :class="{ active: labelRef === '1' }">
           <span>参数</span>
@@ -109,22 +109,22 @@ const labelRef = ref<string>('1')
       </div>
       <!-- 根据选中的标签 显示对应的组件 -->
       <WorkflowHttpParam
-        v-show="labelRef === '1'"
+        v-if="labelRef === '1'"
         :workFlowHttp="props.workFlowHttp"
         :workFlowId="props.workFlowId"
       />
       <WorkflowHttpHeader
-        v-show="labelRef === '2'"
+        v-if="labelRef === '2'"
         :workFlowHttp="props.workFlowHttp"
         :workFlowId="props.workFlowId"
       />
       <WorkflowHttpBody
-        v-show="labelRef === '3'"
+        v-if="labelRef === '3'"
         :workFlowHttp="props.workFlowHttp"
         :workFlowId="props.workFlowId"
       />
       <WorkflowHttpResp
-        v-show="labelRef === '4'"
+        v-if="labelRef === '4'"
         :workFlowHttp="props.workFlowHttp"
         :workFlowId="props.workFlowId"
       />
@@ -142,7 +142,7 @@ const labelRef = ref<string>('1')
 .workflowInfoStyle {
   --label-width: 90px; /* 改成你需要的宽度，比如 80px / 100px */
   width: 100%;
-  height: 40%;
+  height: 240px;
   border-bottom: 1px solid var(--ev-c-border-color1);
   padding: 8px 20px;
   overflow: auto;
@@ -216,6 +216,7 @@ const labelRef = ref<string>('1')
   width: 100%;
   height: 40px;
   display: flex;
+  overflow: hidden; /*超出隐藏 */
 
   .label-test-style {
     height: 100%;

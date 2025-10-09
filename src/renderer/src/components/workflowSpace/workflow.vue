@@ -199,7 +199,7 @@ function clickWorkFlowSub(item: WorkFlowHttp | WorkFlowSql | WorkFlowSleep): voi
 .workflowInfoStyle {
   --label-width: 90px; /* 改成你需要的宽度，比如 80px / 100px */
   width: 100%;
-  height: 35%;
+  height: 200px;
   border-bottom: 1px solid var(--ev-c-border-color1);
   padding: 10px 20px;
   overflow: auto;
@@ -271,7 +271,7 @@ function clickWorkFlowSub(item: WorkFlowHttp | WorkFlowSql | WorkFlowSleep): voi
 /* 工作流子项样式 */
 .workflowSubStyle {
   width: 100%;
-  height: 75%;
+  height: 70%;
   padding: 0px 20px;
 
   .subTitleStyle {
@@ -289,10 +289,11 @@ function clickWorkFlowSub(item: WorkFlowHttp | WorkFlowSql | WorkFlowSleep): voi
   }
   .subStyle {
     width: 100%;
-    height: calc(100% - 40px);
+    height: 90%;
     border: 1px solid var(--ev-c-border-color1);
     overflow: auto;
     .subFlowStyle {
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: space-between;

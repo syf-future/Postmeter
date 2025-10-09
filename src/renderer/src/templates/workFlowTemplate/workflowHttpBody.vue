@@ -143,7 +143,7 @@ function onIsLine(): void {
 }
 
 .param-json {
-  width: calc(100% - 20px);
+  width: calc(100% - 25px);
   height: calc(100% - 10px);
   margin: 5px 10px;
   border: 1px solid var(--ev-c-border-color1);

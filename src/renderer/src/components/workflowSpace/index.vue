@@ -73,7 +73,7 @@ function getWorkFlowSleep(): WorkFlowSleep | undefined {
 
 .tabs-style {
   width: 100%;
-  height: 40px;
+  min-height: 40px;
 }
 
 .content-style {

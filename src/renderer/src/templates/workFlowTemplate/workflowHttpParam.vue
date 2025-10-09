@@ -111,7 +111,7 @@ const addRow = () => {
   height: calc(100% - 10px);
   margin-left: 10px;
   margin-top: 5px;
-  overflow: auto; /* 超出部分显示滚动条 */
+  overflow: auto;
 }
 
 .param-list table tr {
